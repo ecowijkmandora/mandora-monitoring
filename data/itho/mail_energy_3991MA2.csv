@@ -1,0 +1,2 @@
+Address;Timestamp of last available energy measurement;Latest generated energy measurement (kWh);Latest consumed energy measurement (kWh);Timestamp of last smart meter measurement;Latest supplied energy from the grid measurement (kWh);Latest returned energy to the grid measurement (kWh);Total household energy consumption (kWh);
+Robiniahout 2 3991 MA HOUTEN;29-08-2019;7214;2857;;;;
