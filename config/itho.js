@@ -6,10 +6,10 @@ module.exports = {
             processedPath : "import/itho/processed",
             errorPath : "import/itho/error",
             delimiter : ";",
-            dashboard_energy : {
-                typeTag : "dashboard_energy",
+            energy : {
+                typeTag : "energy",
                 data_columns : {
-                    0 : "timestamp",
+                    0 : "datetime",
                     1 : "generated",
                     3 : "consumed"
                 }

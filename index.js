@@ -3,6 +3,9 @@
  */
 require('module-alias/register')
 
+// Initialize logger
+require('@lib/logger')
+
 // Initialize data store 
 require('@lib/data')
 
