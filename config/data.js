@@ -2,7 +2,7 @@ module.exports = {
     influx: {
         host: 'localhost',
         port: 8086,
-        database: 'mandora-monitoring',
+        database: 'mandora',
         retention: '2h'
     },
     store: {
