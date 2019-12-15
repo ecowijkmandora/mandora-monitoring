@@ -14,7 +14,7 @@ require('@lib/itho')
 const { store } = require('@lib/data')
 
 // Initialize Mandora API services
-const { server } = require('@lib/api')
+const { server } = require('@api')
 
 store.events.on('ready', () => {
 	server.start()
