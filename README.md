@@ -5,6 +5,11 @@ Supported functionality
 * Time-series data storage in InfluxDB
 * Import CSV files downloaded from [Itho Monitoring Portal](https://monitoring.ithodaalderop.nl/).
 
+## Configuration
+
+Configuration is stored in the modules found in `/config`.
+Secrets such as InfluxDB database credentials are stored in a `.env` file (using [dotenv](https://github.com/motdotla/dotenv) npm module). See `.env.example` for an example configuration.
+
 ## Data Storage
 
 The application stores time-series data from various inputs (Itho, Zeversolar, SmartDodos) retrieved via CSV or API in its data store.
@@ -12,6 +17,7 @@ The application stores time-series data from various inputs (Itho, Zeversolar, S
 ### InfluxDB
 
 An installation of [InfluxDB](https://docs.influxdata.com/influxdb) is required for the data store (see `/lib/data`). Make sure your InfluxDB is configured and running before you run this application. For more information about using InfluxDB with Node.js, see [influx-node](https://github.com/node-influx/node-influx).
+
 
 ## Authentication
 
