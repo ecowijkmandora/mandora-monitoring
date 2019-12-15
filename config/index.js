@@ -1,4 +1,5 @@
 module.exports = {
-    itho: require('./itho'),
-    data: require('./data')    
+	itho: require('./itho'),
+	data: require('./data'),
+	api: require('./api')
 }

@@ -1,9 +1,11 @@
 # mandora-monitoring
+
 Codebase for Mandora monitoring.
 
-Supported functionality 
-* Time-series data storage in InfluxDB
-* Import CSV files downloaded from [Itho Monitoring Portal](https://monitoring.ithodaalderop.nl/).
+Supported functionality
+
+- Time-series data storage in InfluxDB
+- Import CSV files downloaded from [Itho Monitoring Portal](https://monitoring.ithodaalderop.nl/).
 
 ## Configuration
 
@@ -18,26 +20,36 @@ The application stores time-series data from various inputs (Itho, Zeversolar, S
 
 An installation of [InfluxDB](https://docs.influxdata.com/influxdb) is required for the data store (see `/lib/data`). Make sure your InfluxDB is configured and running before you run this application. For more information about using InfluxDB with Node.js, see [influx-node](https://github.com/node-influx/node-influx).
 
-
 ## Authentication
 
-Services are authenticated with JSON Web Tokens ([JWT](https://jwt.io/)). To generate a JWT token, you need the to know the shared secret.
+The following services are authenticated with JSON Web Tokens ([JWT](https://jwt.io/)):
 
-Generate a JWT token with the following payload/claim:
+- InfluxDB (please note that [influx-node](https://github.com/node-influx/node-influx) does not support JWT, this means connections are made with username/password credentials)
+
+### Authentication service
 
 ```
-{
-  "username": "my_username",
-  "exp": 1609372800
-}
+curl http://localhost:3000/api/auth/token -d username=<USERNAME> -d password=<PASSWORD>
+{"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.he0ErCNloe4J7Id0Ry2SEDg09lKkZkfsRiGsdX_vgEg"}
 ```
 
-Where `username` contains the username in InfluxDB, and `exp` contains the expiration date of the token. You can use an [online tool](https://www.unixtimestamp.com/index.php) to generate a timestamp and the [online JWT debugger](https://jwt.io/) to generate the token using the shared secret. 
+### Accessing authenticated endpoints
+
+#### Mandora API
+
+```
+curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.he0ErCNloe4J7Id0Ry2SEDg09lKkZkfsRiGsdX_vgEg" https://monitoring.ecowijkmandora.nl/api/protected
+
+{"jwt":"ok"}
+```
+
+#### InfluxDB HTTP services
 
 You can test the authentication token by issueing a query to InfluxDB:
 
 ```
-curl -G "http://localhost:8086/query?db=test" --data-urlencode "q=SHOW DATABASES" --header "Authorization: Bearer 
+curl -G "https://monitoring.ecowijkmandora.nl/influx/query?db=test" --data-urlencode "q=SHOW DATABASES" --header "Authorization: Bearer
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.he0ErCNloe4J7Id0Ry2SEDg09lKkZkfsRiGsdX_vgEg"
-```
 
+{"results":[{"statement_id":0,"series":[{"name":"databases","columns":["name"],"values":[["_internal"],["mandora"]]}]}]}
+```

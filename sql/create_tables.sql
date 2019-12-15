@@ -7,8 +7,7 @@
 	`uuid` VARCHAR(64) COMMENT 'External house representation (UUID)',
     `household_id` INT NOT NULL,
     `address_id` INT NOT NULL,
-    `housedetails_id` INT, 
-    `mandate` BOOLEAN NOT NULL DEFAULT 'true',
+    `housedetails_id` INT,
 	PRIMARY KEY (`id`),
     FOREIGN KEY (`installation_id`) 
         REFERENCES Installation(`id`) 
@@ -37,6 +36,8 @@ CREATE TABLE `Household` (
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`name` VARCHAR(255) NOT NULL,
     `phonenumber` VARCHAR(255),
+    `mandateItho` BOOLEAN NOT NULL DEFAULT 'true',
+    `mandateSmartDodos` BOOLEAN NOT NULL DEFAULT 'true',
 	PRIMARY KEY (`id`),
 );
 
