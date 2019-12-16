@@ -2,31 +2,41 @@
 
 Codebase for Mandora monitoring.
 
-Supported functionality
-
-- Time-series data storage in InfluxDB
-- Import CSV files downloaded from [Itho Monitoring Portal](https://monitoring.ithodaalderop.nl/).
+Supported functionality:
+* Mandora Monitoring API
+  * JSON Web Tokens (JWT) token generation for Mandora Monitoring API and InfluxDB endpoints  
+  * Import CSV files downloaded from [Itho Monitoring Portal](https://monitoring.ithodaalderop.nl/).
+* Relational data (users, location, contact details, etc) storage in MySQL database
+* Time-series data (energy, temperature, etc) storage in InfluxDB database
 
 ## Configuration
 
 Configuration is stored in the modules found in `/config`.
-Secrets such as InfluxDB database credentials are stored in a `.env` file (using [dotenv](https://github.com/motdotla/dotenv) npm module). See `.env.example` for an example configuration.
+Secrets such as InfluxDB and MySQL database credentials are stored in the `.env` file (using [dotenv](https://github.com/motdotla/dotenv) npm module). See `.env.example` for an example configuration.
 
 ## Data Storage
 
-The application stores time-series data from various inputs (Itho, Zeversolar, SmartDodos) retrieved via CSV or API in its data store.
+The application stores meta-data about monitored locations and time-series data from various inputs (Itho, Zeversolar, SmartDodos) retrieved via CSV or API in its data store. 
 
-### InfluxDB
+### InfluxDB 1.x
 
-An installation of [InfluxDB](https://docs.influxdata.com/influxdb) is required for the data store (see `/lib/data`). Make sure your InfluxDB is configured and running before you run this application. For more information about using InfluxDB with Node.js, see [influx-node](https://github.com/node-influx/node-influx).
+An installation of [InfluxDB](https://docs.influxdata.com/influxdb) is required for the data store (see `/lib/data`). Make sure your InfluxDB instance is configured, running, and accessible before you run this application. 
+For more information about using InfluxDB with Node.js, see [influx-node module](https://github.com/node-influx/node-influx).
 
-## Authentication
+### MySQL 8.x
+
+The data store also requires an installation of [MySQL](https://dev.mysql.com/doc/refman/8.0/en/installing.html). Make sure your MySQL instance is configured, running, and accessible before you run this application.
+For more information about using MuySQL with Node.js, see [mysql module](https://github.com/mysqljs/mysql).
+
+## User authentication
 
 The following services are authenticated with JSON Web Tokens ([JWT](https://jwt.io/)):
-
-- InfluxDB (please note that [influx-node](https://github.com/node-influx/node-influx) does not support JWT, this means connections are made with username/password credentials)
+* Mandora Monitoring API
+* InfluxDB (please note that [influx-node](https://github.com/node-influx/node-influx) does not support JWT, this means connections from the application itself are made with username/password credentials as configured in the `.env` file).
 
 ### Authentication service
+
+Clients can obtain a JWT token using the authentication service of the Mandora Monitoring API: 
 
 ```
 curl http://localhost:3000/api/auth/token -d username=<USERNAME> -d password=<PASSWORD>
@@ -35,7 +45,11 @@ curl http://localhost:3000/api/auth/token -d username=<USERNAME> -d password=<PA
 
 ### Accessing authenticated endpoints
 
-#### Mandora API
+After obtaining a JWT token, clients can connect to services are authenticated with JSON Web Tokens.
+
+#### Mandora Monitoring API
+
+For the Mandora Monitoring API, append the token in the `Authorization` header of the HTTP-request:
 
 ```
 curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.he0ErCNloe4J7Id0Ry2SEDg09lKkZkfsRiGsdX_vgEg" https://monitoring.ecowijkmandora.nl/api/protected
@@ -45,7 +59,7 @@ curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIx
 
 #### InfluxDB HTTP services
 
-You can test the authentication token by issueing a query to InfluxDB:
+For the Influx HTTP API, you can also append the token in the `Authorization` header of the HTTP-request:
 
 ```
 curl -G "https://monitoring.ecowijkmandora.nl/influx/query?db=test" --data-urlencode "q=SHOW DATABASES" --header "Authorization: Bearer
@@ -53,3 +67,11 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4
 
 {"results":[{"statement_id":0,"series":[{"name":"databases","columns":["name"],"values":[["_internal"],["mandora"]]}]}]}
 ```
+
+## User authorization
+
+Supported authorization levels:
+* No access
+* Anonymous reference data only (e.g. location UUIDs)
+* Anonymous and protected reference data (e.g. location UUIDs and addresses)
+* Anonymous, protected and private reference data (e.g. location UUIDs, addresses, and contact details)

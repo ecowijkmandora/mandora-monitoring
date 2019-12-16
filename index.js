@@ -5,7 +5,7 @@ require('dotenv').config()
 require('module-alias/register')
 
 // Initialize logger
-require('@lib/logger')
+const logger = require('@lib/logger')
 
 // Initialize Itho services
 require('@lib/itho')
