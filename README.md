@@ -18,12 +18,12 @@ Secrets such as InfluxDB and MySQL database credentials are stored in the `.env`
 
 The application stores meta-data about monitored locations and time-series data from various inputs (Itho, Zeversolar, SmartDodos) retrieved via CSV or API in its data store. 
 
-### InfluxDB 1.x
+### InfluxDB 1.7
 
 An installation of [InfluxDB](https://docs.influxdata.com/influxdb) is required for the data store (see `/lib/data`). Make sure your InfluxDB instance is configured, running, and accessible before you run this application. 
 For more information about using InfluxDB with Node.js, see [influx-node module](https://github.com/node-influx/node-influx).
 
-### MySQL 8.x
+### MySQL 8.0
 
 The data store also requires an installation of [MySQL](https://dev.mysql.com/doc/refman/8.0/en/installing.html). Make sure your MySQL instance is configured, running, and accessible before you run this application.
 For more information about using MuySQL with Node.js, see [mysql module](https://github.com/mysqljs/mysql).
