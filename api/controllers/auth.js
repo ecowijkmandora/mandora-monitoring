@@ -1,24 +1,35 @@
 require('module-alias/register')
 const config = require('@config')
 const logger = require('@lib/logger')
-
+const User = require('@api/models/user')
 const jwt = require('jsonwebtoken')
+const _ = require('lodash')
 
 const JWT_EXP_HOURS = 8
 const JWT_SHARED_SECRET = config.api.jwt.sharedSecret
 
 const authenticate = (req, res, next) => {
 	const username = req.body.username
-	// const password = req.body.password
+	const password = req.body.password
 
-	const user = {
-		username: username
-	}
+	User.findByCredentials(username, password, (err, data) => {
+		if (err) {
+			if (err.kind === 'not_found') {
+				// 404
+				logger.warn(`Login attempt by unknown user ${username}`)
+			}
+			next()
+		} else {
+			if (data.active) {
+				req.user = data
+				logger.info(`Authenticated user ${req.user.username}`)				
+			} else {
+				logger.warn(`Login attempt by inactive user ${username}`)
+			}
 
-	logger.info('Authentication for: ', user)
-
-	req.user = user
-	next()
+			next()
+		}
+	})
 }
 
 const generateToken = (req, res, next) => {

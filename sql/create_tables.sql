@@ -85,6 +85,7 @@ CREATE TABLE `users` (
     `password` blob NOT NULL,
     `first_name` varchar(100) NOT NULL,
     `last_name` varchar(100) NOT NULL,
+    `active` BOOL DEFAULT 1,
     `authorization_id` INT NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`authorization_id`) REFERENCES `authorization`(`id`)
