@@ -57,15 +57,24 @@ curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIx
 {"jwt":"ok"}
 ```
 
-#### InfluxDB HTTP services
+#### InfluxDB HTTPS services
 
-For the Influx HTTP API, you can also append the token in the `Authorization` header of the HTTP-request:
+For the Influx HTTPS API, you should also append the token in the `Authorization` header of the HTTPS-request:
 
 ```
 curl -G "https://monitoring.ecowijkmandora.nl/influx/query?db=test" --data-urlencode "q=SHOW DATABASES" --header "Authorization: Bearer
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.he0ErCNloe4J7Id0Ry2SEDg09lKkZkfsRiGsdX_vgEg"
 
 {"results":[{"statement_id":0,"series":[{"name":"databases","columns":["name"],"values":[["_internal"],["mandora"]]}]}]}
+```
+
+Privileged users can also use the InfluxDB CLI (`influx`) to connect to the database with their credentials:
+
+```
+$ influx -ssl -host 'monitoring.ecowijkmandora.nl' -port 8086 -username '<USERNAME>' -password '<PASSWORD>'
+Connected to https://monitoring.ecowijkmandora.nl:8086 version 1.7.9
+InfluxDB shell version: v1.7.9
+>
 ```
 
 ## User authorization
