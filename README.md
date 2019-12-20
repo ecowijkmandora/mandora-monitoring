@@ -1,13 +1,13 @@
-# mandora-monitoring
+# Mandora Monitoring API
 
 Codebase for Mandora monitoring.
 
 Supported functionality:
-* Mandora Monitoring API
-  * JSON Web Tokens (JWT) token generation for Mandora Monitoring API and InfluxDB endpoints  
-  * Import CSV files downloaded from [Itho Monitoring Portal](https://monitoring.ithodaalderop.nl/).
-* Relational data (users, location, contact details, etc) storage in MySQL database
-* Time-series data (energy, temperature, etc) storage in InfluxDB database
+- Mandora Monitoring API
+  - JSON Web Tokens (JWT) token generation for Mandora Monitoring API and InfluxDB endpoints  
+  - Import CSV files downloaded from [Itho Monitoring Portal](https://monitoring.ithodaalderop.nl/).
+- Relational data (users, location, contact details, etc) storage in MySQL database
+- Time-series data (energy, temperature, etc) storage in InfluxDB database
 
 ## Configuration
 
@@ -80,7 +80,13 @@ InfluxDB shell version: v1.7.9
 ## User authorization
 
 Supported authorization levels:
-* No access
-* Anonymous reference data only (e.g. location UUIDs)
-* Anonymous and protected reference data (e.g. location UUIDs and addresses)
-* Anonymous, protected and private reference data (e.g. location UUIDs, addresses, and contact details)
+
+- No access
+- Anonymous reference data only (e.g. location UUIDs)
+- Anonymous and protected reference data (e.g. location UUIDs and addresses)
+- Anonymous, protected and private reference data (e.g. location UUIDs, addresses, and contact details)
+
+## Extras
+
+- See the [License](LICENSE.md) file for license rights and limitations (MIT).
+- Pull Requests are welcome!
