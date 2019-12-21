@@ -12,7 +12,7 @@ const authenticate = (req, res, next) => {
 	const username = req.body.username
 	const password = req.body.password
 
-	User.findByCredentials(username, password, (err, data) => {
+	User.findByUsername(username, (err, data) => {
 		if (err) {
 			if (err.kind === 'not_found') {
 				// 404
@@ -20,14 +20,24 @@ const authenticate = (req, res, next) => {
 			}
 			next()
 		} else {
-			if (data.active) {
-				req.user = data
-				logger.info(`Authenticated user ${req.user.username}`)				
-			} else {
-				logger.warn(`Login attempt by inactive user ${username}`)
-			}
-
-			next()
+			User.findByCredentials(username, password, (err, data) => {
+				if (err) {
+					if (err.kind === 'not_found') {
+						// 404
+						logger.warn(`Login attempt failed (incorrect password) for user ${username}`)
+					}
+					next()
+				} else {
+					if (data.active) {
+						req.user = data
+						logger.info(`Authenticated user ${req.user.username}`)				
+					} else {
+						logger.warn(`Login attempt by inactive user ${username}`)
+					}
+		
+					next()
+				}
+			})
 		}
 	})
 }

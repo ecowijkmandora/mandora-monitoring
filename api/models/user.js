@@ -3,16 +3,16 @@ const config = require('@config')
 const { store } = require('@lib/data')
 const logger = require('@lib/logger')
 const sql = store.mysql
-const MYSQL_AES_KEY = config.data.mysql.aesSecret
+const MYSQL_AES_KEY = config.data.mysql.aesKey
 
 // constructor
 const User = function(user) {
 	this.email = user.email
 	this.username = user.username
-    this.password = user.password
-    //this.active = user.active
-    this.first_name = user.first_name
-    this.last_name = user.last_name
+	this.password = user.password
+	this.active = user.active
+	this.first_name = user.first_name
+	this.last_name = user.last_name
 }
 
 // User.create = (newUser, result) => {
@@ -32,7 +32,7 @@ const User = function(user) {
 // }
 
 User.findById = (userId, result) => {
-	sql.query(`SELECT AES_DECRYPT(password, '${MYSQL_AES_KEY}') AS password_text, * FROM users WHERE id = ${userId}`, (err, res) => {
+	sql.query(`SELECT * FROM users WHERE id = ${userId}`, (err, res) => {
 		if (err) {
 			logger.error('Unable to find user by id: ', err)
 			result(err, null)
@@ -51,23 +51,48 @@ User.findById = (userId, result) => {
 	})
 }
 
-User.findByCredentials = (username, password,result) => {
-	sql.query(`SELECT *  FROM users WHERE username = '${username}' AND AES_DECRYPT(password, '${MYSQL_AES_KEY}') = '${password}'`, (err, res) => {
-		if (err) {
-			logger.error('Unable to find user by username: ', err)
-			result(err, null)
-			return
-		}
+User.findByUsername = (username, result) => {
+	sql.query(
+		`SELECT * FROM users WHERE username = '${username}'`,
+		(err, res) => {
+			if (err) {
+				logger.error(`Unable to find user "${username}" by username:`, err)
+				result(err, null)
+				return
+			}
 
-		if (res.length) {
-			logger.info('Found user by username: ', res[0])
-			result(null, res[0])
-			return
-		}
+			if (res.length) {
+				logger.info(`Found user "${username}" by username`)
+				result(null, res[0])
+				return
+			}
 
-		// not found User with the credentials
-		result({ kind: 'not_found' }, null)
-	})
+			logger.info(`Did not find user "${username}" by username`)			
+			result({ kind: 'not_found' }, null)
+		}
+	)
+}
+
+User.findByCredentials = (username, password, result) => {
+	sql.query(
+		`SELECT * FROM users WHERE username = '${username}' AND AES_DECRYPT(password, '${MYSQL_AES_KEY}') = '${password}'`,
+		(err, res) => {
+			if (err) {
+				logger.error(`Unable to find user "${username}" by credentials:`, err)
+				result(err, null)
+				return
+			}
+
+			if (res.length) {
+				logger.info(`Found user "${username}" by credentials`)
+				result(null, res[0])
+				return
+			}
+
+			logger.info(`Did not find user "${username}" by credentials`)
+			result({ kind: 'not_found' }, null)
+		}
+	)
 }
 
 User.getAll = result => {

@@ -12,6 +12,6 @@ module.exports = {
 		database: process.env.MYSQL_DATABASE || 'mandora',		
 		username: process.env.MYSQL_USERNAME || 'mandora',
 		password: process.env.MYSQL_PASSWORD || 'mandora',
-		aesSecret: process.env.MYSQL_AES_KEY
+		aesKey: process.env.MYSQL_AES_KEY
 	}
 }
