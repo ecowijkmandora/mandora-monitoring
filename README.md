@@ -39,7 +39,7 @@ The following services are authenticated with JSON Web Tokens ([JWT](https://jwt
 Clients can obtain a JWT token using the authentication service of the Mandora Monitoring API: 
 
 ```
-curl http://localhost:3000/api/auth/token -d username=<USERNAME> -d password=<PASSWORD>
+curl https://monitoring.ecowijkmandora.nl/api/auth/token -d username=<USERNAME> -d password=<PASSWORD>
 {"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.he0ErCNloe4J7Id0Ry2SEDg09lKkZkfsRiGsdX_vgEg"}
 ```
 

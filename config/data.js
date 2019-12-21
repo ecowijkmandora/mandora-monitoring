@@ -2,11 +2,10 @@ module.exports = {
 	influx: {
 		host: process.env.INFLUX_HOST || 'localhost',
 		port: process.env.INFLUX_PORT || 8086,
-		protocol: 'http',
+		protocol : process.env.INFLUX_PROTOCOL || 'http',		
 		database: process.env.INFLUX_DATABASE || 'mandora',
-		username: process.env.INFLUX_USERNAME || 'root',
-		password: process.env.INFLUX_PASSWORD || 'root',
-		retention: '2h'
+		username: process.env.INFLUX_USERNAME || 'mandora',
+		password: process.env.INFLUX_PASSWORD || 'mandora'
 	},
 	mysql: {	
 		host: process.env.MYSQL_HOST || 'localhost',
