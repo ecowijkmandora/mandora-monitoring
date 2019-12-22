@@ -1,0 +1,188 @@
+{
+	"info": {
+		"_postman_id": "96274ef0-d972-4957-ad5f-a9bccb097c41",
+		"name": "Mandora API Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Authentication (generate JWT token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0c23b580-b50a-48a8-826c-a5b8e5aee55f",
+								"exec": [
+									"const response = pm.response.json()",
+									"",
+									"pm.environment.set('JWT_TOKEN', response.jwt)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\" : \"{{USERNAME}}\",\n  \"password\" : \"{{PASSWORD}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API}}/auth/token",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"auth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check JWT token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API}}/auth/check",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"auth",
+								"check"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "InfluxDB",
+			"item": [
+				{
+					"name": "List measurements",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "q",
+									"value": "SHOW  MEASUREMENTS",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{INFLUX}}/query?db=mandora",
+							"host": [
+								"{{INFLUX}}"
+							],
+							"path": [
+								"query"
+							],
+							"query": [
+								{
+									"key": "db",
+									"value": "mandora"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List time-series",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "q",
+									"value": "SHOW  SERIES",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{INFLUX}}/query?db=mandora",
+							"host": [
+								"{{INFLUX}}"
+							],
+							"path": [
+								"query"
+							],
+							"query": [
+								{
+									"key": "db",
+									"value": "mandora"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{JWT_TOKEN}}",
+				"type": "string"
+			}
+		]
+	},
+	"protocolProfileBehavior": {}
+}

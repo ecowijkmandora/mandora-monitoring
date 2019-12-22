@@ -3,16 +3,25 @@ const router = Express.Router()
 const authCtrl = require('../controllers/auth')
 const jwt = require('../jwt')
 
+// Generate JWT token using username/password credentials
 router
 	.route('/token')
-	/** POST /api/auth/token Get JWT authentication token */
 	.post(authCtrl.authenticate, authCtrl.generateToken, authCtrl.respondJWT)
 
-/** GET /protected - Test service JWT authentication **/
-router.get('/check', jwt, (req, res) =>
+// Check whether JWT token is valed
+router.get('/check', jwt, (req, res) => res.json(req.auth))
+
+// Update password
+router.put('/password', jwt, (req, res) => {
+	if (!req.body) {
+		res.status(400).send({
+			message: 'Content can not be empty!'
+		})
+	}
+
 	res.json({
-		jwt: 'ok'
+		result: 'ok'
 	})
-)
+})
 
 module.exports = router

@@ -3,6 +3,7 @@ module.exports = {
 		port: 3000
 	},
 	jwt: {
-		sharedSecret: process.env.JWT_SHARED_SECRET
+		sharedSecret: process.env.JWT_SHARED_SECRET,
+		expiration: 8
 	}
 }

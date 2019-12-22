@@ -5,8 +5,10 @@ const User = require('@api/models/user')
 const jwt = require('jsonwebtoken')
 const _ = require('lodash')
 
-const JWT_EXP_HOURS = 8
-const JWT_SHARED_SECRET = config.api.jwt.sharedSecret
+const {
+	expiration : JWT_EXP_HOURS = 8,
+	sharedSecret : JWT_SHARED_SECRET
+} = config.api.jwt
 
 const authenticate = (req, res, next) => {
 	const username = req.body.username
@@ -16,7 +18,7 @@ const authenticate = (req, res, next) => {
 		if (err) {
 			if (err.kind === 'not_found') {
 				// 404
-				logger.warn(`Login attempt by unknown user ${username}`)
+				logger.warn(`Login attempt by unknown user "${username}"`)
 			}
 			next()
 		} else {
@@ -24,15 +26,15 @@ const authenticate = (req, res, next) => {
 				if (err) {
 					if (err.kind === 'not_found') {
 						// 404
-						logger.warn(`Login attempt failed (incorrect password) for user ${username}`)
+						logger.warn(`Login attempt failed (incorrect password) for user "${username}"`)
 					}
 					next()
 				} else {
 					if (data.active) {
 						req.user = data
-						logger.info(`Authenticated user ${req.user.username}`)				
+						logger.info(`Authenticated user "${req.user.username}"`)				
 					} else {
-						logger.warn(`Login attempt by inactive user ${username}`)
+						logger.warn(`Login attempt by inactive user "${username}"`)
 					}
 		
 					next()

@@ -5,48 +5,35 @@ const logger = require('@lib/logger')
 const sql = store.mysql
 const MYSQL_AES_KEY = config.data.mysql.aesKey
 
-// constructor
-const User = function(user) {
-	this.email = user.email
-	this.username = user.username
-	this.password = user.password
-	this.active = user.active
-	this.first_name = user.first_name
-	this.last_name = user.last_name
+class User {
+	constructor(user = {}) {
+		this.email = user.email
+		this.username = user.username
+		this.password = user.password
+		this.active = user.active
+		this.first_name = user.first_name
+		this.last_name = user.last_name
+	}
 }
-
-// User.create = (newUser, result) => {
-// 	sql.query('INSERT INTO users SET ?', newUser, (err, res) => {
-// 		if (err) {
-// 			logger.error('Unable to insert new user: ', err)
-// 			result(err, null)
-// 			return
-// 		}
-
-// 		logger.debug('Inserted new user: ', {
-// 			id: res.insertId,
-// 			...newUser
-// 		})
-// 		result(null, { id: res.insertId, ...newUser })
-// 	})
-// }
 
 User.findById = (userId, result) => {
 	sql.query(`SELECT * FROM users WHERE id = ${userId}`, (err, res) => {
 		if (err) {
-			logger.error('Unable to find user by id: ', err)
+			logger.error(
+				`Error occured while querying user by id ${userId}: `,
+				err
+			)
 			result(err, null)
 			return
 		}
 
 		if (res.length) {
 			logger.debug('Found user by id: ', res[0])
-			res[0].password = res[0].password_text
 			result(null, res[0])
 			return
 		}
 
-		// not found User with the id
+		logger.debug(`Did not find user by id "${userId}"`)
 		result({ kind: 'not_found' }, null)
 	})
 }
@@ -56,18 +43,21 @@ User.findByUsername = (username, result) => {
 		`SELECT * FROM users WHERE username = '${username}'`,
 		(err, res) => {
 			if (err) {
-				logger.error(`Unable to find user "${username}" by username:`, err)
+				logger.error(
+					`Error occured while querying user by username "${username}":`,
+					err
+				)
 				result(err, null)
 				return
 			}
 
 			if (res.length) {
-				logger.info(`Found user "${username}" by username`)
+				logger.log('debug', `Found user by username "${username}"`, {obj : res[0]})
 				result(null, res[0])
 				return
 			}
 
-			logger.info(`Did not find user "${username}" by username`)			
+			logger.debug(`Did not find user by username "${username}"`)
 			result({ kind: 'not_found' }, null)
 		}
 	)
@@ -78,13 +68,16 @@ User.findByCredentials = (username, password, result) => {
 		`SELECT * FROM users WHERE username = '${username}' AND AES_DECRYPT(password, '${MYSQL_AES_KEY}') = '${password}'`,
 		(err, res) => {
 			if (err) {
-				logger.error(`Unable to find user "${username}" by credentials:`, err)
+				logger.error(
+					`Unable to find user "${username}" by credentials:`,
+					err
+				)
 				result(err, null)
 				return
 			}
 
 			if (res.length) {
-				logger.info(`Found user "${username}" by credentials`)
+				logger.debug(`Found user "${username}" by credentials`)
 				result(null, res[0])
 				return
 			}
@@ -107,6 +100,28 @@ User.getAll = result => {
 		result(null, res)
 	})
 }
+
+User.updatePasswordById = (id, user, result) => {
+	sql.query(
+		`UPDATE users SET password = AES_ENCRYPT(?, '${MYSQL_AES_KEY}') WHERE id = ?`,
+		[user.password, id],
+		(err, res) => {
+			if (err) {
+				logger.error('Unable to update user by id: ', err)
+				result(null, err)
+				return
+			}
+
+			if (res.affectedRows == 0) {
+				result({ kind: 'not_found' }, null)
+				return
+			}
+
+			log.debug('Updated user: ', { id: id, ...user })
+			result(null, { id: id, ...user })
+		}
+	)
+}	
 
 // User.updateById = (id, user, result) => {
 // 	sql.query(
