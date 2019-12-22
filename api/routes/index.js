@@ -1,20 +1,20 @@
 const Express = require('express')
 const router = Express.Router()
-const authRoutes = require('./auth')
+const auth = require('./auth.routes')
+const location = require('./location.routes')
 
-/** GET / - Default response (info) **/
 router.get('/', (req, res) => {
-	res.json(['Hello', 'World'])
+	res.json({})
 })
 
-/** GET /status - Check service status **/
 router.get('/status', (req, res) =>
 	res.json({
 		status: 'ok'
 	})
 )
 
-/** Append authentication/authorization routes **/
-router.use('/auth', authRoutes)
+router.use('/auth', auth)
+
+router.use('/locations', location)
 
 module.exports = router

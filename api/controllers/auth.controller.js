@@ -1,7 +1,7 @@
 require('module-alias/register')
 const config = require('@config')
 const logger = require('@lib/logger')
-const User = require('@api/models/user')
+const User = require('@api/models/user.model')
 const jwt = require('jsonwebtoken')
 const _ = require('lodash')
 
