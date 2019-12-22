@@ -81,7 +81,7 @@ CREATE TABLE `household` (
 CREATE TABLE `users` (
     `id` int NOT NULL AUTO_INCREMENT,
     `email` varchar(100) NOT NULL,    
-    `username` varchar(100) NOT NULL,    
+    `username` varchar(100) NOT NULL UNIQUE,    
     `password` blob NOT NULL,
     `first_name` varchar(100) NOT NULL,
     `last_name` varchar(100) NOT NULL,
@@ -98,7 +98,8 @@ CREATE TABLE `users` (
 -- User authorization table
 CREATE TABLE `authorization` (
     `id` int NOT NULL AUTO_INCREMENT,
-    `name` varchar(100),
+    `name` varchar(100) UNIQUE,
+    `readonly` BOOL DEFAULT 1,
     `anonymous` BOOL DEFAULT 0,
     `protected` BOOL DEFAULT 0,
     `private` BOOL DEFAULT 0,
@@ -107,9 +108,10 @@ CREATE TABLE `authorization` (
 
 -- Insert authorization levels
 INSERT INTO `authorization` 
-    (`name`,`anonymous`,`protected`,`private`)
+    (`name`,`readonly`,`anonymous`,`protected`,`private`)
 VALUES
-    ('No access',0,0,0),
-    ('Anonymous',1,0,0),
-    ('Anonymous+Protected',1,1,0),
-    ('Anonymous+Protected+Private',1,1,1);
+    ('No access',1,0,0,0),
+    ('Anonymous',1,1,0,0),
+    ('Anonymous+Protected',1,1,1,0),
+    ('Anonymous+Protected+Private',1,1,1,1),
+    ('Anonymous+Protected+Private (RW)',0,1,1,1);

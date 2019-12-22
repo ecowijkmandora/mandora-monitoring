@@ -1,7 +1,6 @@
 const Express = require('express')
 const router = Express.Router()
 const authRoutes = require('./auth')
-const auth = require('../jwt')
 
 /** GET / - Default response (info) **/
 router.get('/', (req, res) => {
@@ -12,13 +11,6 @@ router.get('/', (req, res) => {
 router.get('/status', (req, res) =>
 	res.json({
 		status: 'ok'
-	})
-)
-
-/** GET /protected - Test service JWT authentication **/
-router.get('/protected', auth, (req, res) =>
-	res.json({
-		jwt: 'ok'
 	})
 )
 
