@@ -4,18 +4,30 @@ const logger = require('@lib/logger')
 const itho = require('@lib/itho')
 
 exports.importCsv = (req, res, next) => {
+	// TODO Check existance of location in MySQL
 	const uuid = req.params.uuid
 
-	// Check existance of location
+	const energy = req.files.energy
+	const temperature = req.files.temperature
 
-	// Check request body, does it contain a csv?
+	if (!energy && !temperature) {
+		res.status(500).json({
+			message: 'no files uploaded'
+		})	
+	} 
 
-	// Import energy values to InfluxDB
-    //itho.csv.import.importCsvEnergyInstallation('3991MA2',__dirname + '/data/itho/20190830/dashboard_energy_3991MA2.csv')
-	//itho.csv.import.importCsvTemperatureEnv('3991MA2',__dirname + '/data/itho/20190830/wpu_temps_3991MA2.csv')
-    //itho.csv.import.importCsvTemperatureBoiler('3991MA2',__dirname + '/data/itho/20190830/wpu_temps_3991MA2.csv')
-    
-	res.status(404).json({
-		message: 'not implemented'
+	if (energy) {
+		const buffer = energy[0].buffer
+		itho.csv.import.importCsvEnergyInstallation(uuid,buffer)
+	}
+
+	if (temperature) {
+		const buffer = temperature[0].buffer
+		itho.csv.import.importCsvTemperatureEnv(uuid,buffer)
+		itho.csv.import.importCsvTemperatureBoiler(uuid,buffer)
+	}	
+
+	res.status(200).json({
+		message: 'Import started.'
 	})
 }
