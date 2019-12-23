@@ -1,6 +1,7 @@
 const Express = require('express')
 const router = Express.Router()
 const auth = require('./auth.routes')
+const itho = require('./itho.routes')
 const location = require('./location.routes')
 
 router.get('/', (req, res) => {
@@ -16,5 +17,7 @@ router.get('/status', (req, res) =>
 router.use('/auth', auth)
 
 router.use('/locations', location)
+
+router.use('/itho', itho)
 
 module.exports = router

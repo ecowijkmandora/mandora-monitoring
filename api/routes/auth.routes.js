@@ -1,12 +1,12 @@
 const Express = require('express')
 const router = Express.Router()
-const auth = require('../controllers/auth.controller')
 const jwt = require('../jwt')
+const controller = require('../controllers/auth.controller')
 
 // Generate JWT token using username/password credentials
 router
 	.route('/token')
-	.post(auth.authenticate, auth.generateToken, auth.respondJWT)
+	.post(controller.authenticate, controller.generateToken, controller.respondJWT)
 
 // Check whether JWT token is valed
 router.get('/check', jwt, (req, res) => res.json(req.auth))

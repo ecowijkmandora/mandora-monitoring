@@ -3,8 +3,9 @@
 Codebase for Mandora monitoring.
 
 Supported functionality:
+
 - Mandora Monitoring API
-  - JSON Web Tokens (JWT) token generation for Mandora Monitoring API and InfluxDB endpoints  
+  - JSON Web Tokens (JWT) token generation for Mandora Monitoring API and InfluxDB endpoints
   - Import CSV files downloaded from [Itho Monitoring Portal](https://monitoring.ithodaalderop.nl/).
 - Relational data (users, location, contact details, etc) storage in MySQL database
 - Time-series data (energy, temperature, etc) storage in InfluxDB database
@@ -18,12 +19,12 @@ Secrets such as InfluxDB and MySQL database credentials are stored in the `.env`
 
 The application stores meta-data about monitored locations and time-series data from various inputs (Itho, Zeversolar, SmartDodos) retrieved via CSV or API in its data store. 
 
-### InfluxDB 1.7
+### Time-series data: InfluxDB 1.7
 
 An installation of [InfluxDB](https://docs.influxdata.com/influxdb) is required for the data store (see `/lib/data`). Make sure your InfluxDB instance is configured, running, and accessible before you run this application. 
 For more information about using InfluxDB with Node.js, see [influx-node module](https://github.com/node-influx/node-influx).
 
-### MySQL 8.0
+### Meta data: MySQL 8.0
 
 The data store also requires an installation of [MySQL](https://dev.mysql.com/doc/refman/8.0/en/installing.html). Make sure your MySQL instance is configured, running, and accessible before you run this application.
 For more information about using MuySQL with Node.js, see [mysql module](https://github.com/mysqljs/mysql).
@@ -39,7 +40,7 @@ The following services are authenticated with JSON Web Tokens ([JWT](https://jwt
 Clients can obtain a JWT token using the authentication service of the Mandora Monitoring API: 
 
 ```
-curl https://localhost/api/auth/token -d username=<USERNAME> -d password=<PASSWORD>
+curl http://localhost:3000/api/auth/token -d username=<USERNAME> -d password=<PASSWORD>
 {"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.he0ErCNloe4J7Id0Ry2SEDg09lKkZkfsRiGsdX_vgEg"}
 ```
 
@@ -49,12 +50,10 @@ After obtaining a JWT token, clients can connect to services are authenticated w
 
 #### Mandora Monitoring API
 
-For the Mandora Monitoring API, append the token in the `Authorization` header of the HTTP-request:
+When requesting data from the Mandora Monitoring API, append the token in the `Authorization` header of the HTTP-request:
 
 ```
-curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.he0ErCNloe4J7Id0Ry2SEDg09lKkZkfsRiGsdX_vgEg" https://localhost/api/protected
-
-{"jwt":"ok"}
+curl https://localhost:3000/api/locations --header "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.he0ErCNloe4J7Id0Ry2SEDg09lKkZkfsRiGsdX_vgEg" 
 ```
 
 #### InfluxDB HTTPS services
@@ -68,7 +67,7 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4
 {"results":[{"statement_id":0,"series":[{"name":"databases","columns":["name"],"values":[["_internal"],["mandora"]]}]}]}
 ```
 
-Privileged users can also use the InfluxDB CLI (`influx`) to connect to the database with their credentials:
+Privileged users can also use the InfluxDB CLI (`influx`) to connect to the database with their credentials. Append the `-ssl` option when InfluxDB is configured to use HTTPS endpoints:
 
 ```
 $ influx -ssl -host 'localhost' -port 8086 -username '<USERNAME>' -password '<PASSWORD>'
@@ -82,9 +81,10 @@ InfluxDB shell version: v1.7.9
 Supported authorization levels:
 
 - No access
-- Anonymous reference data only (e.g. location UUIDs)
-- Anonymous and protected reference data (e.g. location UUIDs and addresses)
-- Anonymous, protected and private reference data (e.g. location UUIDs, addresses, and contact details)
+- Anonymous reference data only (e.g. location UUIDs) - read-only
+- Anonymous and protected reference data (e.g. location UUIDs and addresses) - read-only
+- Anonymous, protected and private reference data (e.g. location UUIDs, addresses, and contact details) - read-only
+- Anonymous, protected and private reference data (e.g. location UUIDs, addresses, and contact details) - read/write
 
 ## Extras
 
