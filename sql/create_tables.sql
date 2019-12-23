@@ -6,6 +6,16 @@ use mandora;
 CREATE USER 'mandora'@'localhost' IDENTIFIED WITH mysql_native_password BY 'MyPassword';
 GRANT ALL PRIVILEGES ON *.* TO 'mandora'@'localhost';
 
+-- Address information (protected)
+CREATE TABLE `address` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `postalcode` VARCHAR(10) NOT NULL,
+    `housenumber` VARCHAR(10) NOT NULL,
+    `streetname` VARCHAR(100) NOT NULL,
+    `city` VARCHAR(100) NOT NULL,
+    PRIMARY KEY (`id`)
+);
+
 -- Location data of the object that's being monitored (anonymous)
 CREATE TABLE `location`(
     `id` INT NOT NULL AUTO_INCREMENT,
@@ -15,13 +25,14 @@ CREATE TABLE `location`(
     FOREIGN KEY (`address_id`) REFERENCES `address`(`id`) ON DELETE CASCADE
 );
 
--- Address information (protected)
-CREATE TABLE `address` (
-    `id` INT NOT NULL AUTO_INCREMENT,
-    `postalcode` VARCHAR(10) NOT NULL,
-    `housenumber` VARCHAR(10) NOT NULL,
-    `streetname` VARCHAR(100) NOT NULL,
-    `city` VARCHAR(100) NOT NULL,
+-- User authorization table
+CREATE TABLE `authorization` (
+    `id` int NOT NULL AUTO_INCREMENT,
+    `name` varchar(100) UNIQUE,
+    `readonly` BOOL DEFAULT 1,
+    `anonymous` BOOL DEFAULT 0,
+    `protected` BOOL DEFAULT 0,
+    `private` BOOL DEFAULT 0,
     PRIMARY KEY (`id`)
 );
 
@@ -39,13 +50,3 @@ CREATE TABLE `users` (
     FOREIGN KEY (`authorization_id`) REFERENCES `authorization`(`id`)
 );
 
--- User authorization table
-CREATE TABLE `authorization` (
-    `id` int NOT NULL AUTO_INCREMENT,
-    `name` varchar(100) UNIQUE,
-    `readonly` BOOL DEFAULT 1,
-    `anonymous` BOOL DEFAULT 0,
-    `protected` BOOL DEFAULT 0,
-    `private` BOOL DEFAULT 0,
-    PRIMARY KEY (`id`)
-);

@@ -61,3 +61,6 @@ typings/
 .next
 
 /import/
+
+# Production data queries
+mandora_data.sql

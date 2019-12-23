@@ -88,6 +88,124 @@
 			"protocolProfileBehavior": {}
 		},
 		{
+			"name": "Locations",
+			"item": [
+				{
+					"name": "Retrieve all locations",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API}}/locations",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"locations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve location (by uuid)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API}}/locations/{{LOCATION}}",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"locations",
+								"{{LOCATION}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Data Import",
+			"item": [
+				{
+					"name": "Import Itho data for location (by uuid)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "energy",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "temperature",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API}}/itho/import/{{LOCATION}}",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"itho",
+								"import",
+								"{{LOCATION}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
 			"name": "InfluxDB",
 			"item": [
 				{
