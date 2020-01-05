@@ -1,13 +1,14 @@
 require('module-alias/register')
 const config = require('@config')
+const { store } = require('@lib/data')
 const logger = require('@lib/logger')
 const User = require('@api/models/user.model')
 const jwt = require('jsonwebtoken')
 const _ = require('lodash')
 
 const {
-	expiration : JWT_EXP_HOURS = 8,
-	sharedSecret : JWT_SHARED_SECRET
+	expiration: JWT_EXP_HOURS = 8,
+	sharedSecret: JWT_SHARED_SECRET
 } = config.api.jwt
 
 const authenticate = (req, res, next) => {
@@ -26,19 +27,70 @@ const authenticate = (req, res, next) => {
 				if (err) {
 					if (err.kind === 'not_found') {
 						// 404
-						logger.warn(`Login attempt failed (incorrect password) for user "${username}"`)
+						logger.warn(
+							`Login attempt failed (incorrect password) for user "${username}"`
+						)
 					}
 					next()
 				} else {
 					if (data.active) {
 						req.user = data
-						logger.info(`Authenticated user "${req.user.username}"`)				
+						logger.info(`Authenticated user "${req.user.username}"`)
 					} else {
-						logger.warn(`Login attempt by inactive user "${username}"`)
+						logger.warn(
+							`Login attempt by inactive user "${username}"`
+						)
 					}
-		
+
+					// Check InfluxDB permissions for this user
+					syncInfluxAuth(username, password, data)
+
 					next()
 				}
+			})
+		}
+	})
+}
+
+const syncInfluxAuth = (username, password, data) => {
+	logger.info('Syncing InfluxDB user credentials and privileges')
+
+	store.influx.getUsers().then(async users => {
+		if ((users.findIndex(obj => obj.user === username) == -1)) {
+			// User does hot exist in InfluxDB yet
+			logger.debug(`User ${username} does not exist in InfluxDB`)
+
+			// Create user
+			await store.influx.createUser(username, password, false).then(() => {
+				logger.debug(
+					`Created InfluxDB credentials for user ${username}`
+				)
+			})
+		}
+
+		// Update password to match current credentials
+		store.influx.setPassword(username, password).then(() => {
+			logger.debug(`Updated InfluxDB password for user ${username}`)
+		})
+
+		// Revoke READ privilege when user is not active
+		if (data.active) {
+			logger.debug(
+				`User ${username} is active. Granting READ privilege in InfluxDB.`
+			)
+			store.influx.grantPrivilege(username, 'READ').then(() => {
+				logger.debug(
+					`Granted READ privilege in InfluxDB for user ${username}`
+				)
+			})
+		} else {
+			logger.debug(
+				`User ${username} is not active. Revoking READ privilege in InfluxDB.`
+			)
+			store.influx.revokePrivilege(username, 'READ').then(() => {
+				logger.debug(
+					`Revoked READ privilege in InfluxDB for user ${username}`
+				)
 			})
 		}
 	})
