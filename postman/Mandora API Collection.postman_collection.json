@@ -88,7 +88,7 @@
 			"protocolProfileBehavior": {}
 		},
 		{
-			"name": "Locations",
+			"name": "Location data",
 			"item": [
 				{
 					"name": "Retrieve all locations",
@@ -149,10 +149,336 @@
 			"protocolProfileBehavior": {}
 		},
 		{
+			"name": "Time Series data (InfluxDB)",
+			"item": [
+				{
+					"name": "SHOW MEASUREMENTS",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "q",
+									"value": "SHOW  MEASUREMENTS",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{INFLUX}}/query?db=mandora",
+							"host": [
+								"{{INFLUX}}"
+							],
+							"path": [
+								"query"
+							],
+							"query": [
+								{
+									"key": "db",
+									"value": "mandora"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SHOW RETENTION POLICIES",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "q",
+									"value": "SHOW  RETENTION POLICIES",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{INFLUX}}/query?db=mandora",
+							"host": [
+								"{{INFLUX}}"
+							],
+							"path": [
+								"query"
+							],
+							"query": [
+								{
+									"key": "db",
+									"value": "mandora"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SHOW TAG KEYS",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "q",
+									"value": "SHOW  TAG KEYS",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{INFLUX}}/query?db=mandora",
+							"host": [
+								"{{INFLUX}}"
+							],
+							"path": [
+								"query"
+							],
+							"query": [
+								{
+									"key": "db",
+									"value": "mandora"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SHOW TAG VALUES (location)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "q",
+									"value": "SHOW  TAG VALUES WITH KEY = location",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{INFLUX}}/query?db=mandora",
+							"host": [
+								"{{INFLUX}}"
+							],
+							"path": [
+								"query"
+							],
+							"query": [
+								{
+									"key": "db",
+									"value": "mandora"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SHOW FIELD KEYS",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "q",
+									"value": "SHOW  FIELD KEYS",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{INFLUX}}/query?db=mandora",
+							"host": [
+								"{{INFLUX}}"
+							],
+							"path": [
+								"query"
+							],
+							"query": [
+								{
+									"key": "db",
+									"value": "mandora"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SHOW SERIES",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "q",
+									"value": "SHOW  SERIES",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{INFLUX}}/query?db=mandora",
+							"host": [
+								"{{INFLUX}}"
+							],
+							"path": [
+								"query"
+							],
+							"query": [
+								{
+									"key": "db",
+									"value": "mandora"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SELECT * FROM itho_energy (for location by uuid)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "q",
+									"value": "SELECT * FROM itho_energy WHERE location = '{{LOCATION}}'\n",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{INFLUX}}/query?db=mandora",
+							"host": [
+								"{{INFLUX}}"
+							],
+							"path": [
+								"query"
+							],
+							"query": [
+								{
+									"key": "db",
+									"value": "mandora"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SELECT * FROM itho_temperature (for location by uuid)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "q",
+									"value": "SELECT * FROM itho_temperature WHERE location = '{{LOCATION}}'\n",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{INFLUX}}/query?db=mandora",
+							"host": [
+								"{{INFLUX}}"
+							],
+							"path": [
+								"query"
+							],
+							"query": [
+								{
+									"key": "db",
+									"value": "mandora"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
 			"name": "Data Import",
 			"item": [
 				{
-					"name": "Import Itho data for location (by uuid)",
+					"name": "Import Itho data (for location by uuid)",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -298,92 +624,6 @@
 								"import",
 								"bulk",
 								"energy"
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"protocolProfileBehavior": {}
-		},
-		{
-			"name": "InfluxDB",
-			"item": [
-				{
-					"name": "List measurements",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "q",
-									"value": "SHOW  MEASUREMENTS",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{INFLUX}}/query?db=mandora",
-							"host": [
-								"{{INFLUX}}"
-							],
-							"path": [
-								"query"
-							],
-							"query": [
-								{
-									"key": "db",
-									"value": "mandora"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "List time-series",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/x-www-form-urlencoded"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "q",
-									"value": "SHOW  SERIES",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{INFLUX}}/query?db=mandora",
-							"host": [
-								"{{INFLUX}}"
-							],
-							"path": [
-								"query"
-							],
-							"query": [
-								{
-									"key": "db",
-									"value": "mandora"
-								}
 							]
 						}
 					},
