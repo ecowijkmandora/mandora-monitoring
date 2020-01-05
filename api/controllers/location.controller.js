@@ -34,7 +34,7 @@ exports.findByUuid = (req, res, next) => {
 			next()
 		} else {
 			//const locations = Array.from(data)
-			//logger.debug('Retrieved all locations:', { obj: locations })
+			//logger.debug('Retrieved all locations:', locations)
 			res.send(data)
 		}
 	})

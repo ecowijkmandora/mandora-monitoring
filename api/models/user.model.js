@@ -21,14 +21,14 @@ User.findById = (userId, result) => {
 		if (err) {
 			logger.error(
 				`Error occured while querying user by id ${userId}: `,
-				{ obj: err }
+				err
 			)
 			result(err, null)
 			return
 		}
 
 		if (res.length) {
-			logger.debug('Found user by id: ', { obj: res[0] })
+			logger.debug('Found user by id: ', res[0])
 			result(null, res[0])
 			return
 		}
@@ -45,16 +45,18 @@ User.findByUsername = (username, result) => {
 			if (err) {
 				logger.error(
 					`Error occured while querying user by username "${username}":`,
-					{ obj: err }
+					err
 				)
 				result(err, null)
 				return
 			}
 
 			if (res.length) {
-				logger.log('debug', `Found user by username "${username}"`, {
-					obj: res[0]
-				})
+				logger.log(
+					'debug',
+					`Found user by username "${username}"`,
+					res[0]
+				)
 				result(null, res[0])
 				return
 			}
@@ -72,7 +74,7 @@ User.findByCredentials = (username, password, result) => {
 			if (err) {
 				logger.error(
 					`Unable to find user "${username}" by credentials:`,
-					{ obj: err }
+					err
 				)
 				result(err, null)
 				return

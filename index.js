@@ -21,6 +21,6 @@ store.events.on('ready', () => {
 })
 
 store.events.on('error', err => {
-	logger.error('Error occured in data store, exiting')
+	logger.error('Error occured in data store, exiting', err)
 	process.exit(1)
 })
