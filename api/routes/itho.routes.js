@@ -15,8 +15,8 @@ router.post('/import/bulk/temperature', jwt, upload.any(),controller.bulkImportC
 
 // Import Itho CSVs for address identified by uuid
 router.post('/import/:uuid', jwt, upload.fields([
-	{ name: 'energy', maxCount: 1 },
-	{ name: 'temperature', maxCount: 1 }
+	{ name: 'energy' },
+	{ name: 'temperature' }
 ]),controller.importCsv)
 
 

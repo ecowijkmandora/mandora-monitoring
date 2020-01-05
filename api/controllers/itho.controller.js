@@ -2,6 +2,7 @@ require('module-alias/register')
 const config = require('@config')
 const logger = require('@lib/logger')
 const itho = require('@lib/itho')
+const _ = require('lodash')
 
 exports.importCsv = (req, res, next) => {
 	const files = req.files
@@ -20,13 +21,17 @@ exports.importCsv = (req, res, next) => {
 	const temperature = files.temperature
 
 	if (energy) {
-		const buffer = energy[0].buffer
-		itho.csv.import.importCsvEnergy(uuid, buffer)
+		_.forEach(energy, file => {
+			const buffer = file.buffer
+			itho.csv.import.importCsvEnergy(uuid, buffer)
+		})
 	}
 
 	if (temperature) {
-		const buffer = temperature[0].buffer
-		itho.csv.import.importCsvTemperature(uuid, buffer)
+		_.forEach(temperature, file => {
+			const buffer = file.buffer
+			itho.csv.import.importCsvTemperature(uuid, buffer)
+		})
 	}
 
 	res.status(200).json({
@@ -73,5 +78,5 @@ exports.bulkImportCsvTemperature = (req, res, next) => {
 
 	res.status(200).json({
 		message: 'Import started.'
-	})	
+	})
 }
