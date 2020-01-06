@@ -3,9 +3,6 @@ module.exports = {
 		import: {
 			measurementPrefix: 'itho_',
 			source: 'csv',
-			importPath: 'import/itho',
-			processedPath: 'import/itho/processed',
-			errorPath: 'import/itho/error',
 			delimiter: ';',
 			energy: {
 				measurement: 'energy',

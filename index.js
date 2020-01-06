@@ -10,6 +10,9 @@ const logger = require('@lib/logger')
 // Initialize Itho services
 require('@lib/itho')
 
+// Initialize SmartDodos services
+require('@lib/smartdodos')
+
 // Initialize data store
 const { store } = require('@lib/data')
 
