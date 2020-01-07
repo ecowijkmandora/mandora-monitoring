@@ -146,6 +146,28 @@
 					"response": []
 				}
 			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "02d12166-f742-4732-81b8-f8f2ff8b787e",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "261922ca-427d-4fd1-93a8-ce42d068749a",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
 			"protocolProfileBehavior": {}
 		},
 		{
@@ -470,6 +492,46 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "DROP DATABASE",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "q",
+									"value": "DROP DATABASE mandora",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{INFLUX}}/query?db=mandora",
+							"host": [
+								"{{INFLUX}}"
+							],
+							"path": [
+								"query"
+							],
+							"query": [
+								{
+									"key": "db",
+									"value": "mandora"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -624,6 +686,280 @@
 								"import",
 								"bulk",
 								"energy"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Import SmartDodos data (for location by uuid)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "energy",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API}}/smartdodos/import/{{LOCATION}}",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"smartdodos",
+								"import",
+								"{{LOCATION}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Import SmartDodos data via website API",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "access_token",
+									"value": "",
+									"description": "Access token taken from the API URL used by the SmartDodos CSV export view (https://app.smartdodos.com/#/export-csv",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201912",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201911",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201910",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201909",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201908",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201907",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201906",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201905",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201904",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201903",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201902",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201901",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201812",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201811",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201810",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201809",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201808",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201807",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201806",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201805",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201804",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201803",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201802",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201801",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201712",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201711",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201710",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201709",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201708",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201707",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201706",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201705",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201704",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201703",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201702",
+									"type": "text"
+								},
+								{
+									"key": "month",
+									"value": "201701",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API}}/smartdodos/import/api/readings",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"smartdodos",
+								"import",
+								"api",
+								"readings"
 							]
 						}
 					},
