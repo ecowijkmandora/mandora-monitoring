@@ -1,7 +1,10 @@
 module.exports = {
 	api: { 
 		baseUrl: 'https://app-api.smartdodos.com/api/p4',
-		energy: '/getreadings'
+		energyService: '/getreadings',
+		parameterAccessToken: 'access_token',
+		parameterEan: 'ean',
+		parameterMonth: 'month'
 	},
 	csv: {
 		import: {
