@@ -67,10 +67,10 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4
 {"results":[{"statement_id":0,"series":[{"name":"databases","columns":["name"],"values":[["_internal"],["mandora"]]}]}]}
 ```
 
-Privileged users can also use the InfluxDB CLI (`influx`) to connect to the database with their credentials. Append the `-ssl` option when InfluxDB is configured to use HTTPS endpoints:
+Administrators with server access can also use the InfluxDB CLI (`influx`) to connect to the database with their credentials. Append the `-ssl` option when InfluxDB is configured to use HTTPS endpoints:
 
 ```
-$ influx -ssl -host 'localhost' -port 8086 -username '<USERNAME>' -password '<PASSWORD>'
+$ influx -host 'localhost' -port 8086 -username '<USERNAME>' -password '<PASSWORD>'
 Connected to https://localhost:8086 version 1.7.9
 InfluxDB shell version: v1.7.9
 >
