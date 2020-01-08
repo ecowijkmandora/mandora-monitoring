@@ -63,4 +63,4 @@ typings/
 /import/
 
 # Production data queries
-mandora_data.sql
+mandora_data*.sql

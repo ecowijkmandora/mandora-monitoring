@@ -25,27 +25,36 @@ CREATE TABLE `location`(
     FOREIGN KEY (`address_id`) REFERENCES `address`(`id`) ON DELETE CASCADE
 );
 
+CREATE TABLE `heatpump`(
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `brand` VARCHAR(64),
+    `type` VARCHAR(64),
+    PRIMARY KEY (`id`)
+);
+
 -- Installations in the house (protected)
-CREATE TABLE `installations`(
+CREATE TABLE `installation`(
     `id` INT NOT NULL AUTO_INCREMENT,
     `ean_energy` VARCHAR(64),
     `ean_gas` VARCHAR(64),
-    `energymeter` VARCHAR(64),
+    `serial_energymeter` VARCHAR(64),
+    `heatpump_id` INT,
     `location_id` INT NOT NULL,    
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`location_id`) REFERENCES `location`(`id`) ON DELETE CASCADE    
+    FOREIGN KEY (`location_id`) REFERENCES `location`(`id`) ON DELETE CASCADE,    
+    FOREIGN KEY (`heatpump_id`) REFERENCES `heatpump`(`id`)
 );
     
 -- Mandates per partner (private)
-CREATE TABLE `mandates`(
-    `id` INT NOT NULL AUTO_INCREMENT,
-    `itho` BOOL DEFAULT 0,
-    `smartdodos` BOOL DEFAULT 0,
-    `zevercloud` BOOL DEFAULT 0,    
-    `location_id` INT NOT NULL,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`location_id`) REFERENCES `location`(`id`) ON DELETE CASCADE    
-);
+-- CREATE TABLE `mandate`(
+--     `id` INT NOT NULL AUTO_INCREMENT,
+--     `itho` BOOL DEFAULT 0,
+--     `smartdodos` BOOL DEFAULT 0,
+--     `zevercloud` BOOL DEFAULT 0,    
+--     `location_id` INT NOT NULL,
+--     PRIMARY KEY (`id`),
+--     FOREIGN KEY (`location_id`) REFERENCES `location`(`id`) ON DELETE CASCADE    
+-- );
 
 -- User authorization table
 CREATE TABLE `authorization` (

@@ -5,6 +5,12 @@ const smartdodos = require('@lib/smartdodos')
 const _ = require('lodash')
 const Installation = require('@api/models/installation.model')
 const request = require('request')
+const throttledRequest = require('throttled-request')(request)
+
+throttledRequest.configure({
+	requests: 2,
+	milliseconds: 1000
+})
 
 const SMARTDODOS_API_ENERGY_SERVICE_URL =
 	config.smartdodos.api.baseUrl + config.smartdodos.api.energyService
@@ -84,26 +90,38 @@ exports.apiReadings = (req, res, next) => {
 			for (let installation of data) {
 				const ean = installation.ean_energy
 				const uuid = installation.location_uuid
-				_.forEach(months, (month, idx, arr) => {
-					const url = apiUrl(ean, month, accessToken)
-					logger.debug(
-						`Fetching energy data from SmartDodos API: ${url}`
-					)
 
-					request(url, {
-						encoding: null // We want the CSV in a buffer
-					}, (err, res, buffer) => {
-						if (err) {
-							logger.error(
-								'Unable to retrieve CSV from SmartDodos API:',
-								err.message
-							)
-							return
-						}
-						//logger.debug('CSV', body)
-						smartdodos.csv.import.importCsvEnergy(uuid, buffer)	
+				// Retrieve energy data if we have a valid EAN number
+				if (!isNaN(ean)) {
+					_.forEach(months, async (month, idx, arr) => {
+						const url = apiUrl(ean, month, accessToken)
+						logger.debug(
+							`Fetching energy data from SmartDodos API: ${url}`
+						)
+
+						throttledRequest(
+							url,
+							{
+								encoding: null // We want the CSV in a buffer
+							},
+							(err, res, buffer) => {
+								if (err) {
+									logger.error(
+										'Unable to retrieve CSV from SmartDodos API:',
+										err.message
+									)
+									return
+								}
+								//logger.debug('CSV', body)
+								logger.debug('Retrieved a CSV from SmartDodos API') // ,buffer.toString())
+								smartdodos.csv.import.importCsvEnergy(
+									uuid,
+									buffer
+								)
+							}
+						)
 					})
-				})
+				}
 			}
 			next()
 		}

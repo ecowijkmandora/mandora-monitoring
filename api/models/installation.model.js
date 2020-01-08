@@ -10,7 +10,7 @@ class Installation {
 		this.location_uuid = installation.location_uuid
 		this.ean_energy = installation.ean_energy
 		this.ean_gas = installation.ean_gas
-		this.energymeter = installation.energymeter
+		this.serial_energymeter = installation.serial_energymeter
 	}
 }
 
@@ -18,7 +18,7 @@ Installation.getAll = result => {
 	logger.debug(`Installation.getAll()`)
 
 	sql.query(
-		'SELECT location.uuid as location_uuid, ean_energy, ean_gas, energymeter FROM installations INNER JOIN location ON installations.location_id=location.id',
+		'SELECT location.uuid as location_uuid, ean_energy, ean_gas, serial_energymeter FROM installation INNER JOIN location ON installation.location_id=location.id',
 		(err, res) => {
 			if (err) {
 				logger.error(`Installation.getAll: error occured`, err)
