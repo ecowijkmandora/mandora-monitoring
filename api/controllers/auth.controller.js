@@ -56,42 +56,80 @@ const syncInfluxAuth = (username, password, data) => {
 	logger.info('Syncing InfluxDB user credentials and privileges')
 
 	store.influx.getUsers().then(async users => {
-		if ((users.findIndex(obj => obj.user === username) == -1)) {
-			// User does hot exist in InfluxDB yet
+		if (users.findIndex(obj => obj.user === username) == -1) {
+			// User does hot exist in InfluxDB
 			logger.debug(`User ${username} does not exist in InfluxDB`)
 
-			// Create user
-			await store.influx.createUser(username, password, false).then(() => {
+			// Check if user is active and should have access to InfluxDB
+			if (data.influx_access && data.active) {
+				// Create user
+				await store.influx
+					.createUser(username, password, false)
+					.then(() => {
+						logger.debug(
+							`Created InfluxDB credentials for active user ${username}`
+						)
+					})
+			} else {
+				// User does not exist in InfluxDB and should not be there
 				logger.debug(
-					`Created InfluxDB credentials for user ${username}`
+					`Not creating InfluxDB credentials for ${username}, unauthorized for InfluxDB`
 				)
-			})
+				return
+			}
 		}
 
-		// Update password to match current credentials
-		store.influx.setPassword(username, password).then(() => {
-			logger.debug(`Updated InfluxDB password for user ${username}`)
-		})
+		// User exists or has just been created
+		if (!data.influx_access || !data.active) {
+			// Drop existing user if it's inactive or should not have InfluxDB access
 
-		// Revoke READ privilege when user is not active
-		if (data.active) {
-			logger.debug(
-				`User ${username} is active. Granting READ privilege in InfluxDB.`
-			)
-			store.influx.grantPrivilege(username, 'READ').then(() => {
+			store.influx.dropUser(username).then(() => {
 				logger.debug(
-					`Granted READ privilege in InfluxDB for user ${username}`
+					`Removed InfluxDB credentials for user ${username}`
 				)
 			})
 		} else {
-			logger.debug(
-				`User ${username} is not active. Revoking READ privilege in InfluxDB.`
-			)
-			store.influx.revokePrivilege(username, 'READ').then(() => {
-				logger.debug(
-					`Revoked READ privilege in InfluxDB for user ${username}`
-				)
+			// Update user details in InfluxDB for user that should have access
+
+			// Update password to match current credentials
+			store.influx.setPassword(username, password).then(() => {
+				logger.debug(`Updated InfluxDB password for user ${username}`)
 			})
+
+			// Update privileges
+			if (data.admin) {
+				logger.debug(
+					`User ${username} is an admin. Granting admin and WRITE privileges in InfluxDB.`
+				)
+
+				store.influx.grantAdminPrivilege(username).then(() => {
+					logger.debug(
+						`Granted administrator privilege in InfluxDB for user ${username}`
+					)
+				})
+
+				store.influx.grantPrivilege(username, 'WRITE').then(() => {
+					logger.debug(
+						`Granted ALL privilege in InfluxDB for user ${username}`
+					)
+				})
+			} else {
+				logger.debug(
+					`User ${username} is not an admin. Granting READ privilege in InfluxDB.`
+				)
+
+				store.influx.revokeAdminPrivilege(username).then(() => {
+					logger.debug(
+						`Revoked administrator privilege in InfluxDB for user ${username}`
+					)
+				})
+
+				store.influx.grantPrivilege(username, 'READ').then(() => {
+					logger.debug(
+						`Granted READ privilege in InfluxDB for user ${username}`
+					)
+				})
+			}
 		}
 	})
 }

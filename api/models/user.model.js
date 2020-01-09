@@ -5,6 +5,7 @@ const logger = require('@lib/logger')
 const sql = store.mysql
 const MYSQL_AES_KEY = config.data.mysql.aesKey
 const MYSQL_TABLE_USER = 'user'
+const MYSQL_TABLE_AUTHORIZATION = 'authorization'
 
 class User {
 	constructor(user = {}) {
@@ -67,9 +68,9 @@ class User {
 		)
 	}
 
-	static findByCredentials = (username, password, result) => {
+	static findByCredentials = (username, password, result) => {	
 		sql.query(
-			`SELECT * FROM ${MYSQL_TABLE_USER} WHERE username = '${username}' AND AES_DECRYPT(password, '${MYSQL_AES_KEY}') = '${password}'`,
+			`SELECT * FROM ${MYSQL_TABLE_USER} INNER JOIN ${MYSQL_TABLE_AUTHORIZATION} ON ${MYSQL_TABLE_USER}.${MYSQL_TABLE_AUTHORIZATION}_id = ${MYSQL_TABLE_AUTHORIZATION}.id WHERE username = '${username}' AND AES_DECRYPT(password, '${MYSQL_AES_KEY}') = '${password}'`,
 			(err, res) => {
 				if (err) {
 					logger.error(
