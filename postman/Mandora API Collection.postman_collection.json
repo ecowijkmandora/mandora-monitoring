@@ -171,52 +171,62 @@
 			"protocolProfileBehavior": {}
 		},
 		{
-			"name": "Time Series data (InfluxDB)",
+			"name": "Data export",
 			"item": [
 				{
-					"name": "SHOW MEASUREMENTS",
+					"name": "Export SmartDodos energy data (for location by uuid)",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
+						"auth": {
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "q",
-									"value": "SHOW  MEASUREMENTS",
-									"type": "text"
+									"key": "token",
+									"value": "{{JWT_TOKEN}}",
+									"type": "string"
 								}
 							]
 						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
 						"url": {
-							"raw": "{{INFLUX}}/query?db=mandora",
+							"raw": "{{API}}/smartdodos/export/{{LOCATION}}/energy",
 							"host": [
-								"{{INFLUX}}"
+								"{{API}}"
 							],
 							"path": [
-								"query"
-							],
-							"query": [
-								{
-									"key": "db",
-									"value": "mandora"
-								}
+								"smartdodos",
+								"export",
+								"{{LOCATION}}",
+								"energy"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "SHOW RETENTION POLICIES",
+					"name": "Export Itho energy data (for location by uuid)",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
-						"method": "POST",
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -226,37 +236,47 @@
 							}
 						],
 						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
+							"mode": "formdata",
+							"formdata": [
 								{
-									"key": "q",
-									"value": "SHOW  RETENTION POLICIES",
-									"type": "text"
+									"key": "energy",
+									"type": "file",
+									"src": []
 								}
 							]
 						},
 						"url": {
-							"raw": "{{INFLUX}}/query?db=mandora",
+							"raw": "{{API}}/itho/export/{{LOCATION}}/energy",
 							"host": [
-								"{{INFLUX}}"
+								"{{API}}"
 							],
 							"path": [
-								"query"
-							],
-							"query": [
-								{
-									"key": "db",
-									"value": "mandora"
-								}
+								"itho",
+								"export",
+								"{{LOCATION}}",
+								"energy"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "SHOW TAG KEYS",
+					"name": "Export Itho temperature data (for location by uuid)",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
-						"method": "POST",
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -266,308 +286,25 @@
 							}
 						],
 						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
+							"mode": "formdata",
+							"formdata": [
 								{
-									"key": "q",
-									"value": "SHOW  TAG KEYS",
-									"type": "text"
+									"key": "energy",
+									"type": "file",
+									"src": []
 								}
 							]
 						},
 						"url": {
-							"raw": "{{INFLUX}}/query?db=mandora",
+							"raw": "{{API}}/itho/export/{{LOCATION}}/temperature",
 							"host": [
-								"{{INFLUX}}"
+								"{{API}}"
 							],
 							"path": [
-								"query"
-							],
-							"query": [
-								{
-									"key": "db",
-									"value": "mandora"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "SHOW TAG VALUES (location)",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/x-www-form-urlencoded"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "q",
-									"value": "SHOW  TAG VALUES WITH KEY = location",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{INFLUX}}/query?db=mandora",
-							"host": [
-								"{{INFLUX}}"
-							],
-							"path": [
-								"query"
-							],
-							"query": [
-								{
-									"key": "db",
-									"value": "mandora"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "SHOW FIELD KEYS",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/x-www-form-urlencoded"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "q",
-									"value": "SHOW  FIELD KEYS",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{INFLUX}}/query?db=mandora",
-							"host": [
-								"{{INFLUX}}"
-							],
-							"path": [
-								"query"
-							],
-							"query": [
-								{
-									"key": "db",
-									"value": "mandora"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "SHOW SERIES",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/x-www-form-urlencoded"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "q",
-									"value": "SHOW  SERIES",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{INFLUX}}/query?db=mandora",
-							"host": [
-								"{{INFLUX}}"
-							],
-							"path": [
-								"query"
-							],
-							"query": [
-								{
-									"key": "db",
-									"value": "mandora"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "SELECT * FROM itho_energy (for location by uuid)",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/x-www-form-urlencoded"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "q",
-									"value": "SELECT * FROM itho_energy WHERE location = '{{LOCATION}}'\n",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{INFLUX}}/query?db=mandora",
-							"host": [
-								"{{INFLUX}}"
-							],
-							"path": [
-								"query"
-							],
-							"query": [
-								{
-									"key": "db",
-									"value": "mandora"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "SELECT * FROM itho_temperature (for location by uuid)",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/x-www-form-urlencoded"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "q",
-									"value": "SELECT * FROM itho_temperature WHERE location = '{{LOCATION}}'\n",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{INFLUX}}/query?db=mandora",
-							"host": [
-								"{{INFLUX}}"
-							],
-							"path": [
-								"query"
-							],
-							"query": [
-								{
-									"key": "db",
-									"value": "mandora"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "SELECT * FROM smartdodos_energy (for location by uuid)",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/x-www-form-urlencoded"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "q",
-									"value": "SELECT * FROM smartdodos_energy WHERE location = '{{LOCATION}}'\n",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{INFLUX}}/query?db=mandora",
-							"host": [
-								"{{INFLUX}}"
-							],
-							"path": [
-								"query"
-							],
-							"query": [
-								{
-									"key": "db",
-									"value": "mandora"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "DROP DATABASE",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/x-www-form-urlencoded"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "q",
-									"value": "DROP DATABASE mandora",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{INFLUX}}/query?db=mandora",
-							"host": [
-								"{{INFLUX}}"
-							],
-							"path": [
-								"query"
-							],
-							"query": [
-								{
-									"key": "db",
-									"value": "mandora"
-								}
+								"itho",
+								"export",
+								"{{LOCATION}}",
+								"temperature"
 							]
 						}
 					},
@@ -577,298 +314,672 @@
 			"protocolProfileBehavior": {}
 		},
 		{
-			"name": "Data Import",
+			"name": "Administration",
 			"item": [
 				{
-					"name": "Import Itho data (for location by uuid)",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{JWT_TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "energy",
-									"type": "file",
-									"src": []
+					"name": "InfluxDB",
+					"item": [
+						{
+							"name": "SHOW MEASUREMENTS",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/x-www-form-urlencoded",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "q",
+											"value": "SHOW  MEASUREMENTS",
+											"type": "text"
+										}
+									]
 								},
-								{
-									"key": "temperature",
-									"type": "file",
-									"src": []
+								"url": {
+									"raw": "{{INFLUX}}/query?db=mandora",
+									"host": [
+										"{{INFLUX}}"
+									],
+									"path": [
+										"query"
+									],
+									"query": [
+										{
+											"key": "db",
+											"value": "mandora"
+										}
+									]
 								}
-							]
+							},
+							"response": []
 						},
-						"url": {
-							"raw": "{{API}}/itho/import/{{LOCATION}}",
-							"host": [
-								"{{API}}"
-							],
-							"path": [
-								"itho",
-								"import",
-								"{{LOCATION}}"
-							]
+						{
+							"name": "SHOW RETENTION POLICIES",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "q",
+											"value": "SHOW  RETENTION POLICIES",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{INFLUX}}/query?db=mandora",
+									"host": [
+										"{{INFLUX}}"
+									],
+									"path": [
+										"query"
+									],
+									"query": [
+										{
+											"key": "db",
+											"value": "mandora"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SHOW TAG KEYS",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "q",
+											"value": "SHOW  TAG KEYS",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{INFLUX}}/query?db=mandora",
+									"host": [
+										"{{INFLUX}}"
+									],
+									"path": [
+										"query"
+									],
+									"query": [
+										{
+											"key": "db",
+											"value": "mandora"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SHOW TAG VALUES (location)",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "q",
+											"value": "SHOW  TAG VALUES WITH KEY = location",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{INFLUX}}/query?db=mandora",
+									"host": [
+										"{{INFLUX}}"
+									],
+									"path": [
+										"query"
+									],
+									"query": [
+										{
+											"key": "db",
+											"value": "mandora"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SHOW FIELD KEYS",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "q",
+											"value": "SHOW  FIELD KEYS",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{INFLUX}}/query?db=mandora",
+									"host": [
+										"{{INFLUX}}"
+									],
+									"path": [
+										"query"
+									],
+									"query": [
+										{
+											"key": "db",
+											"value": "mandora"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SHOW SERIES",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "q",
+											"value": "SHOW  SERIES",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{INFLUX}}/query?db=mandora",
+									"host": [
+										"{{INFLUX}}"
+									],
+									"path": [
+										"query"
+									],
+									"query": [
+										{
+											"key": "db",
+											"value": "mandora"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SELECT * FROM itho_energy (for location by uuid)",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "q",
+											"value": "SELECT * FROM itho_energy WHERE location = '{{LOCATION}}'\n",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{INFLUX}}/query?db=mandora",
+									"host": [
+										"{{INFLUX}}"
+									],
+									"path": [
+										"query"
+									],
+									"query": [
+										{
+											"key": "db",
+											"value": "mandora"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SELECT * FROM itho_temperature (for location by uuid)",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "q",
+											"value": "SELECT * FROM itho_temperature WHERE location = '{{LOCATION}}'\n",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{INFLUX}}/query?db=mandora",
+									"host": [
+										"{{INFLUX}}"
+									],
+									"path": [
+										"query"
+									],
+									"query": [
+										{
+											"key": "db",
+											"value": "mandora"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SELECT * FROM smartdodos_energy (for location by uuid)",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "q",
+											"value": "SELECT * FROM smartdodos_energy WHERE location = '{{LOCATION}}'\n",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{INFLUX}}/query?db=mandora",
+									"host": [
+										"{{INFLUX}}"
+									],
+									"path": [
+										"query"
+									],
+									"query": [
+										{
+											"key": "db",
+											"value": "mandora"
+										}
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
 				},
 				{
-					"name": "Bulk import Itho energy data",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{JWT_TOKEN}}",
-									"type": "string"
+					"name": "Data Import",
+					"item": [
+						{
+							"name": "Import Itho data (for location by uuid)",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{JWT_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/x-www-form-urlencoded",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "energy",
+											"type": "file",
+											"src": []
+										},
+										{
+											"key": "temperature",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{API}}/itho/import/{{LOCATION}}",
+									"host": [
+										"{{API}}"
+									],
+									"path": [
+										"itho",
+										"import",
+										"{{LOCATION}}"
+									]
 								}
-							]
+							},
+							"response": []
 						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/x-www-form-urlencoded"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "{{LOCATION}}",
-									"type": "file",
-									"src": []
+						{
+							"name": "Bulk import Itho energy data",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{JWT_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "{{LOCATION}}",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{API}}/itho/import/bulk/energy",
+									"host": [
+										"{{API}}"
+									],
+									"path": [
+										"itho",
+										"import",
+										"bulk",
+										"energy"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": "",
+											"disabled": true
+										}
+									]
 								}
-							]
+							},
+							"response": []
 						},
-						"url": {
-							"raw": "{{API}}/itho/import/bulk/energy",
-							"host": [
-								"{{API}}"
-							],
-							"path": [
-								"itho",
-								"import",
-								"bulk",
-								"energy"
-							],
-							"query": [
-								{
-									"key": "",
-									"value": "",
-									"disabled": true
+						{
+							"name": "Bulk import Itho temperature data",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{JWT_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "{{LOCATION}}",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{API}}/itho/import/bulk/energy",
+									"host": [
+										"{{API}}"
+									],
+									"path": [
+										"itho",
+										"import",
+										"bulk",
+										"energy"
+									]
 								}
-							]
+							},
+							"response": []
+						},
+						{
+							"name": "Import SmartDodos energy data (for location by uuid)",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{JWT_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "energy",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{API}}/smartdodos/import/{{LOCATION}}",
+									"host": [
+										"{{API}}"
+									],
+									"path": [
+										"smartdodos",
+										"import",
+										"{{LOCATION}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Import SmartDodos energy data via website API",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{JWT_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "access_token",
+											"value": "{{SMARTDODOS_ACCESS_TOKEN}}",
+											"description": "Access token taken from the API URL used by the SmartDodos CSV export view (https://app.smartdodos.com/#/export-csv",
+											"type": "text"
+										},
+										{
+											"key": "month",
+											"value": "202001",
+											"type": "text"
+										},
+										{
+											"key": "month",
+											"value": "201912",
+											"type": "text"
+										},
+										{
+											"key": "month",
+											"value": "201911",
+											"type": "text"
+										},
+										{
+											"key": "month",
+											"value": "201910",
+											"type": "text"
+										},
+										{
+											"key": "month",
+											"value": "201909",
+											"type": "text"
+										},
+										{
+											"key": "month",
+											"value": "201908",
+											"type": "text"
+										},
+										{
+											"key": "month",
+											"value": "201907",
+											"type": "text"
+										},
+										{
+											"key": "month",
+											"value": "201906",
+											"type": "text"
+										},
+										{
+											"key": "month",
+											"value": "201905",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{API}}/smartdodos/import/api/readings",
+									"host": [
+										"{{API}}"
+									],
+									"path": [
+										"smartdodos",
+										"import",
+										"api",
+										"readings"
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
-				},
-				{
-					"name": "Bulk import Itho temperature data",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{JWT_TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/x-www-form-urlencoded"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "{{LOCATION}}",
-									"type": "file",
-									"src": []
-								}
-							]
-						},
-						"url": {
-							"raw": "{{API}}/itho/import/bulk/energy",
-							"host": [
-								"{{API}}"
-							],
-							"path": [
-								"itho",
-								"import",
-								"bulk",
-								"energy"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Import SmartDodos data (for location by uuid)",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{JWT_TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/x-www-form-urlencoded"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "energy",
-									"type": "file",
-									"src": []
-								}
-							]
-						},
-						"url": {
-							"raw": "{{API}}/smartdodos/import/{{LOCATION}}",
-							"host": [
-								"{{API}}"
-							],
-							"path": [
-								"smartdodos",
-								"import",
-								"{{LOCATION}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Import SmartDodos data via website API",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{JWT_TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/x-www-form-urlencoded"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "access_token",
-									"value": "{{SMARTDODOS_ACCESS_TOKEN}}",
-									"description": "Access token taken from the API URL used by the SmartDodos CSV export view (https://app.smartdodos.com/#/export-csv",
-									"type": "text"
-								},
-								{
-									"key": "month",
-									"value": "202001",
-									"type": "text"
-								},
-								{
-									"key": "month",
-									"value": "201912",
-									"type": "text"
-								},
-								{
-									"key": "month",
-									"value": "201911",
-									"type": "text"
-								},
-								{
-									"key": "month",
-									"value": "201910",
-									"type": "text"
-								},
-								{
-									"key": "month",
-									"value": "201909",
-									"type": "text"
-								},
-								{
-									"key": "month",
-									"value": "201908",
-									"type": "text"
-								},
-								{
-									"key": "month",
-									"value": "201907",
-									"type": "text"
-								},
-								{
-									"key": "month",
-									"value": "201906",
-									"type": "text"
-								},
-								{
-									"key": "month",
-									"value": "201905",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{API}}/smartdodos/import/api/readings",
-							"host": [
-								"{{API}}"
-							],
-							"path": [
-								"smartdodos",
-								"import",
-								"api",
-								"readings"
-							]
-						}
-					},
-					"response": []
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
 				}
 			],
 			"protocolProfileBehavior": {}
