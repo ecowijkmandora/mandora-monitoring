@@ -18,4 +18,7 @@ router.post('/import/:uuid', jwt, upload.fields([
 	{ name: 'energy' }
 ]),controller.importCsv)
 
+// Export energy data for address identified by uuid
+router.get('/export/:uuid/energy', jwt,controller.exportEnergy)
+
 module.exports = router

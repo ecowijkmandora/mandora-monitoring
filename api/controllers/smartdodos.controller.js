@@ -4,6 +4,7 @@ const logger = require('@lib/logger')
 const smartdodos = require('@lib/smartdodos')
 const _ = require('lodash')
 const Installation = require('@api/models/installation.model')
+const { SmartdodosEnergy } = require('@api/models/smartdodos.model')
 const request = require('request')
 const throttledRequest = require('throttled-request')(request)
 
@@ -19,6 +20,24 @@ const SMARTDODOS_API_PARAMETERS_ACCESS_TOKEN =
 const SMARTDODOS_API_PARAMETERS_MONTH = config.smartdodos.api.parameterMonth
 const SMARTDODOS_API_PARAMETERS_EAN = config.smartdodos.api.parameterEan
 
+exports.exportEnergy = (req, res, next) => {
+	const uuid = req.params.uuid
+
+	SmartdodosEnergy.getAllByUuid(uuid, (err, data) => {
+		if (err) {
+			if (err.kind === 'not_found') {
+				// 404
+				logger.warn(
+					`Did not find any Smartdodos energy readings for UUID "${uuid}"`
+				)
+			}
+			next()
+		} else {
+			res.status(200).json(data)
+		}
+	})
+}
+
 exports.importCsv = (req, res, next) => {
 	const files = req.files
 
@@ -29,7 +48,6 @@ exports.importCsv = (req, res, next) => {
 		return
 	}
 
-	// TODO Check existance of location in MySQL
 	const uuid = req.params.uuid
 
 	const energy = files.energy
@@ -113,7 +131,9 @@ exports.apiReadings = (req, res, next) => {
 									return
 								}
 								//logger.debug('CSV', body)
-								logger.debug('Retrieved a CSV from SmartDodos API') // ,buffer.toString())
+								logger.debug(
+									'Retrieved a CSV from SmartDodos API'
+								) // ,buffer.toString())
 								smartdodos.csv.import.importCsvEnergy(
 									uuid,
 									buffer

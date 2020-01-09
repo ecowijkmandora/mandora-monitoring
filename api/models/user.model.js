@@ -14,37 +14,12 @@ class User {
 		this.first_name = user.first_name
 		this.last_name = user.last_name
 	}
-}
 
-User.findById = (userId, result) => {
-	sql.query(`SELECT * FROM users WHERE id = ${userId}`, (err, res) => {
-		if (err) {
-			logger.error(
-				`Error occured while querying user by id ${userId}: `,
-				err
-			)
-			result(err, null)
-			return
-		}
-
-		if (res.length) {
-			logger.debug('Found user by id: ', res[0])
-			result(null, res[0])
-			return
-		}
-
-		logger.debug(`Did not find user by id "${userId}"`)
-		result({ kind: 'not_found' }, null)
-	})
-}
-
-User.findByUsername = (username, result) => {
-	sql.query(
-		`SELECT * FROM users WHERE username = '${username}'`,
-		(err, res) => {
+	static findById = (userId, result) => {
+		sql.query(`SELECT * FROM users WHERE id = ${userId}`, (err, res) => {
 			if (err) {
 				logger.error(
-					`Error occured while querying user by username "${username}":`,
+					`Error occured while querying user by id ${userId}: `,
 					err
 				)
 				result(err, null)
@@ -52,44 +27,69 @@ User.findByUsername = (username, result) => {
 			}
 
 			if (res.length) {
-				logger.log(
-					'debug',
-					`Found user by username "${username}"`,
-					res[0]
-				)
+				logger.debug('Found user by id: ', res[0])
 				result(null, res[0])
 				return
 			}
 
-			logger.debug(`Did not find user by username "${username}"`)
+			logger.debug(`Did not find user by id "${userId}"`)
 			result({ kind: 'not_found' }, null)
-		}
-	)
-}
+		})
+	}
 
-User.findByCredentials = (username, password, result) => {
-	sql.query(
-		`SELECT * FROM users WHERE username = '${username}' AND AES_DECRYPT(password, '${MYSQL_AES_KEY}') = '${password}'`,
-		(err, res) => {
-			if (err) {
-				logger.error(
-					`Unable to find user "${username}" by credentials:`,
-					err
-				)
-				result(err, null)
-				return
+	static findByUsername = (username, result) => {
+		sql.query(
+			`SELECT * FROM users WHERE username = '${username}'`,
+			(err, res) => {
+				if (err) {
+					logger.error(
+						`Error occured while querying user by username "${username}":`,
+						err
+					)
+					result(err, null)
+					return
+				}
+
+				if (res.length) {
+					logger.log(
+						'debug',
+						`Found user by username "${username}"`,
+						res[0]
+					)
+					result(null, res[0])
+					return
+				}
+
+				logger.debug(`Did not find user by username "${username}"`)
+				result({ kind: 'not_found' }, null)
 			}
+		)
+	}
 
-			if (res.length) {
-				logger.debug(`Found user "${username}" by credentials`)
-				result(null, res[0])
-				return
+	static findByCredentials = (username, password, result) => {
+		sql.query(
+			`SELECT * FROM users WHERE username = '${username}' AND AES_DECRYPT(password, '${MYSQL_AES_KEY}') = '${password}'`,
+			(err, res) => {
+				if (err) {
+					logger.error(
+						`Unable to find user "${username}" by credentials:`,
+						err
+					)
+					result(err, null)
+					return
+				}
+
+				if (res.length) {
+					logger.debug(`Found user "${username}" by credentials`)
+					result(null, res[0])
+					return
+				}
+
+				logger.info(`Did not find user "${username}" by credentials`)
+				result({ kind: 'not_found' }, null)
 			}
-
-			logger.info(`Did not find user "${username}" by credentials`)
-			result({ kind: 'not_found' }, null)
-		}
-	)
+		)
+	}
 }
 
 module.exports = User
