@@ -17,7 +17,7 @@ class SmartdodosEnergy {
 	static getAllByUuid = (uuid, result) => {
 		logger.debug(`SmartdodosEnergy.getAllByUuid(${uuid})`)
 
-		const query = `SELECT * FROM ${escape.measurement(
+		const query = `SELECT consumed,generated FROM ${escape.measurement(
 			SMARTDODOS_CSV_MEASUREMENT_ENERGY_NAME
 		)} WHERE location = ${escape.stringLit(uuid)} ORDER BY time DESC`
 		logger.debug('Using query:', query)

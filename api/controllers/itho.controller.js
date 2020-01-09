@@ -5,6 +5,15 @@ const itho = require('@lib/itho')
 const _ = require('lodash')
 const { IthoEnergy, IthoTemperature } = require('@api/models/itho.model')
 
+const ITHO_CSV_MEASUREMENT_PREFIX = config.itho.csv.import.measurementPrefix
+const ITHO_CSV_MEASUREMENT_ENERGY_NAME = ITHO_CSV_MEASUREMENT_PREFIX + config.itho.csv.import.energy.measurement
+const ITHO_CSV_MEASUREMENT_TEMPERATURE_NAME = ITHO_CSV_MEASUREMENT_PREFIX + config.itho.csv.import.temperature.measurement
+
+const ITHO_CSV_MEASUREMENT_ENERGY_UNITS =
+config.itho.csv.import.energy.units
+const ITHO_CSV_MEASUREMENT_TEMPERATURE_UNITS =
+config.itho.csv.import.temperature.units
+
 exports.exportEnergy = (req, res, next) => {
 	const uuid = req.params.uuid
 
@@ -18,7 +27,11 @@ exports.exportEnergy = (req, res, next) => {
 			}
 			next()
 		} else {
-			res.status(200).json(data)
+			res.status(200).json({
+				measurement: ITHO_CSV_MEASUREMENT_ENERGY_NAME,
+				units: ITHO_CSV_MEASUREMENT_ENERGY_UNITS,
+				points: data
+			})
 		}
 	})
 }
@@ -36,7 +49,11 @@ exports.exportTemperature = (req, res, next) => {
 			}
 			next()
 		} else {
-			res.status(200).json(data)
+			res.status(200).json({
+				measurement: ITHO_CSV_MEASUREMENT_TEMPERATURE_NAME,
+				units: ITHO_CSV_MEASUREMENT_TEMPERATURE_UNITS,
+				points: data
+			})
 		}
 	})
 }

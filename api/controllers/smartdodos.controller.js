@@ -20,6 +20,14 @@ const SMARTDODOS_API_PARAMETERS_ACCESS_TOKEN =
 const SMARTDODOS_API_PARAMETERS_MONTH = config.smartdodos.api.parameterMonth
 const SMARTDODOS_API_PARAMETERS_EAN = config.smartdodos.api.parameterEan
 
+const SMARTDODOS_CSV_MEASUREMENT_PREFIX =
+	config.smartdodos.csv.import.measurementPrefix
+const SMARTDODOS_CSV_MEASUREMENT_ENERGY_NAME =
+	SMARTDODOS_CSV_MEASUREMENT_PREFIX +
+	config.smartdodos.csv.import.energy.measurement
+const SMARTDODOS_CSV_MEASUREMENT_ENERGY_UNITS =
+	config.smartdodos.csv.import.energy.units
+
 exports.exportEnergy = (req, res, next) => {
 	const uuid = req.params.uuid
 
@@ -33,7 +41,11 @@ exports.exportEnergy = (req, res, next) => {
 			}
 			next()
 		} else {
-			res.status(200).json(data)
+			res.status(200).json({
+				measurement: SMARTDODOS_CSV_MEASUREMENT_ENERGY_NAME,
+				units: SMARTDODOS_CSV_MEASUREMENT_ENERGY_UNITS,
+				points: data
+			})
 		}
 	})
 }

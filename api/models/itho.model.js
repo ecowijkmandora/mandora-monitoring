@@ -17,7 +17,7 @@ class IthoEnergy {
 	static getAllByUuid = (uuid, result) => {
 		logger.debug(`IthoEnergy.getAllByUuid(${uuid})`)
 
-		const query = `SELECT * FROM ${escape.measurement(
+		const query = `SELECT consumed,generated FROM ${escape.measurement(
 			ITHO_CSV_MEASUREMENT_ENERGY_NAME
 		)} WHERE location = ${escape.stringLit(uuid)}
 		ORDER BY time DESC`
@@ -45,7 +45,7 @@ class IthoTemperature {
 	static getAllByUuid = (uuid, result) => {
 		logger.debug(`IthoTemperature.getAllByUuid(${uuid})`)
 
-		const query = `SELECT * FROM ${escape.measurement(
+		const query = `SELECT indoor,outdoor,setting,boiler_low,boiler_high FROM ${escape.measurement(
 			ITHO_CSV_MEASUREMENT_TEMPERATURE_NAME
 		)} WHERE location = ${escape.stringLit(uuid)}
 		ORDER BY time DESC`
