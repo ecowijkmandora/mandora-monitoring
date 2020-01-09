@@ -60,15 +60,33 @@ CREATE TABLE `installation`(
 CREATE TABLE `authorization` (
     `id` int NOT NULL AUTO_INCREMENT,
     `name` varchar(100) UNIQUE,
-    `readonly` BOOL DEFAULT 1,
-    `anonymous` BOOL DEFAULT 0,
-    `protected` BOOL DEFAULT 0,
-    `private` BOOL DEFAULT 0,
+    `api_access` BOOL DEFAULT 0,
+    `influx_access` BOOL DEFAULT 0,
+    `admin` BOOL DEFAULT 0,
     PRIMARY KEY (`id`)
 );
 
+CREATE TABLE `mandate` (
+    `id` int NOT NULL AUTO_INCREMENT,
+    `name` varchar(100) UNIQUE,
+    `location_details` BOOL DEFAULT 0,
+    `personal_details` BOOL DEFAULT 0,
+    `itho` BOOL DEFAULT 0,
+    `smartdodos` BOOL DEFAULT 0,
+    `zeversolar` BOOL DEFAULT 0,
+    PRIMARY KEY (`id`)
+);
+
+CREATE TABLE `mandate_location` ( 
+    `mandate_id` INT NOT NULL,
+    `location_id` INT NOT NULL,
+    PRIMARY KEY (`mandate_id`,`location_id`),
+    FOREIGN KEY (`mandate_id`) REFERENCES `mandate`(`id`),
+    FOREIGN KEY (`location_id`) REFERENCES `location`(`id`)
+);
+
 -- User authentication table
-CREATE TABLE `users` (
+CREATE TABLE `user` (
     `id` int NOT NULL AUTO_INCREMENT,
     `email` varchar(100) NOT NULL,    
     `username` varchar(100) NOT NULL UNIQUE,    
@@ -77,7 +95,9 @@ CREATE TABLE `users` (
     `last_name` varchar(100) NOT NULL,
     `active` BOOL DEFAULT 1,
     `authorization_id` INT NOT NULL,
+    `mandate_id` INT,
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`authorization_id`) REFERENCES `authorization`(`id`)
+    FOREIGN KEY (`authorization_id`) REFERENCES `authorization`(`id`),
+    FOREIGN KEY (`mandate_id`) REFERENCES `mandate`(`id`)
 );
 

@@ -3,6 +3,8 @@ const config = require('@config')
 const { store } = require('@lib/data')
 const logger = require('@lib/logger')
 const sql = store.mysql
+const MYSQL_TABLE_LOCATION = 'location'
+const MYSQL_TABLE_ADDRESS = 'address'
 
 class Location {
 	constructor(location = {}) {
@@ -15,7 +17,7 @@ class Location {
 		logger.debug(`Location.getAll()`)
 
 		sql.query(
-			'SELECT uuid, postalcode, housenumber, streetname, city FROM location INNER JOIN address on location.address_id = address.id',
+			`SELECT uuid, postalcode, housenumber, streetname, city FROM ${MYSQL_TABLE_LOCATION} INNER JOIN ${MYSQL_TABLE_ADDRESS} on ${MYSQL_TABLE_LOCATION}.${MYSQL_TABLE_ADDRESS}_id = ${MYSQL_TABLE_ADDRESS}.id`,
 			(err, res) => {
 				if (err) {
 					logger.error(`Location.getAll: error occured`, err)
@@ -33,7 +35,7 @@ class Location {
 		logger.debug(`Location.findByUuid(${uuid})`)
 
 		sql.query(
-			`SELECT uuid, postalcode, housenumber, streetname, city  FROM location INNER JOIN address on location.address_id = address.id WHERE uuid = ?`,
+			`SELECT uuid, postalcode, housenumber, streetname, city FROM ${MYSQL_TABLE_LOCATION} INNER JOIN ${MYSQL_TABLE_ADDRESS} on ${MYSQL_TABLE_LOCATION}.${MYSQL_TABLE_ADDRESS}_id = ${MYSQL_TABLE_ADDRESS}.id WHERE uuid = ?`,
 			uuid,
 			(err, res) => {
 				if (err) {

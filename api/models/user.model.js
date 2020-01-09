@@ -4,6 +4,7 @@ const { store } = require('@lib/data')
 const logger = require('@lib/logger')
 const sql = store.mysql
 const MYSQL_AES_KEY = config.data.mysql.aesKey
+const MYSQL_TABLE_USER = 'user'
 
 class User {
 	constructor(user = {}) {
@@ -16,7 +17,7 @@ class User {
 	}
 
 	static findById = (userId, result) => {
-		sql.query(`SELECT * FROM users WHERE id = ${userId}`, (err, res) => {
+		sql.query(`SELECT * FROM ${MYSQL_TABLE_USER} WHERE id = ${userId}`, (err, res) => {
 			if (err) {
 				logger.error(
 					`Error occured while querying user by id ${userId}: `,
@@ -39,7 +40,7 @@ class User {
 
 	static findByUsername = (username, result) => {
 		sql.query(
-			`SELECT * FROM users WHERE username = '${username}'`,
+			`SELECT * FROM ${MYSQL_TABLE_USER} WHERE username = '${username}'`,
 			(err, res) => {
 				if (err) {
 					logger.error(
@@ -68,7 +69,7 @@ class User {
 
 	static findByCredentials = (username, password, result) => {
 		sql.query(
-			`SELECT * FROM users WHERE username = '${username}' AND AES_DECRYPT(password, '${MYSQL_AES_KEY}') = '${password}'`,
+			`SELECT * FROM ${MYSQL_TABLE_USER} WHERE username = '${username}' AND AES_DECRYPT(password, '${MYSQL_AES_KEY}') = '${password}'`,
 			(err, res) => {
 				if (err) {
 					logger.error(
