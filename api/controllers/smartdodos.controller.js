@@ -4,6 +4,7 @@ const logger = require('@lib/logger')
 const smartdodos = require('@lib/smartdodos')
 const _ = require('lodash')
 const Installation = require('@api/models/installation.model')
+const Location = require('@api/models/location.model')
 const { SmartdodosEnergy } = require('@api/models/smartdodos.model')
 const request = require('request')
 const throttledRequest = require('throttled-request')(request)
@@ -31,20 +32,32 @@ const SMARTDODOS_CSV_MEASUREMENT_ENERGY_UNITS =
 exports.exportEnergy = (req, res, next) => {
 	const uuid = req.params.uuid
 
-	SmartdodosEnergy.getAllByUuid(uuid, (err, data) => {
+	Location.findByUuidMandated(req.auth.username, uuid, (err, data) => {
 		if (err) {
 			if (err.kind === 'not_found') {
-				// 404
-				logger.warn(
-					`Did not find any Smartdodos energy readings for UUID "${uuid}"`
-				)
+				res.status(404).send({
+					message: `Could not find location with uuid ${uuid}.`
+				})
 			}
 			next()
 		} else {
-			res.status(200).json({
-				measurement: SMARTDODOS_CSV_MEASUREMENT_ENERGY_NAME,
-				units: SMARTDODOS_CSV_MEASUREMENT_ENERGY_UNITS,
-				points: data
+			// Address exists and is mandated
+			SmartdodosEnergy.getAllByUuid(uuid, (err, data) => {
+				if (err) {
+					if (err.kind === 'not_found') {
+						// 404
+						logger.warn(
+							`Did not find any Smartdodos energy readings for UUID "${uuid}"`
+						)
+					}
+					next()
+				} else {
+					res.status(200).json({
+						measurement: SMARTDODOS_CSV_MEASUREMENT_ENERGY_NAME,
+						units: SMARTDODOS_CSV_MEASUREMENT_ENERGY_UNITS,
+						points: data
+					})
+				}
 			})
 		}
 	})

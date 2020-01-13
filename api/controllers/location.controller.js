@@ -4,8 +4,7 @@ const logger = require('@lib/logger')
 const Location = require('@api/models/location.model')
 
 exports.findAll = (req, res, next) => {
-	// TODO Respect authorization levels (address data)
-	Location.getAll((err, data) => {
+	Location.getAllMandated(req.auth.username, (err, data) => {
 		if (err) {
 			if (err.kind === 'not_found') {
 				res.status(404).send({
@@ -21,20 +20,17 @@ exports.findAll = (req, res, next) => {
 }
 
 exports.findByUuid = (req, res, next) => {
-	// TODO Respect authorization levels (address data)
 	const uuid = req.params.uuid
 
-	Location.findByUuid(uuid, (err, data) => {
+	Location.findByUuidMandated(req.auth.username, uuid, (err, data) => {
 		if (err) {
 			if (err.kind === 'not_found') {
 				res.status(404).send({
-					message: `Could not find location with uuid "${uuid}".`
+					message: `Could not find location with uuid ${uuid}.`
 				})
 			}
 			next()
 		} else {
-			//const locations = Array.from(data)
-			//logger.debug('Retrieved all locations:', locations)
 			res.send(data)
 		}
 	})

@@ -3,34 +3,48 @@ const config = require('@config')
 const logger = require('@lib/logger')
 const itho = require('@lib/itho')
 const _ = require('lodash')
+const Location = require('@api/models/location.model')
 const { IthoEnergy, IthoTemperature } = require('@api/models/itho.model')
 
 const ITHO_CSV_MEASUREMENT_PREFIX = config.itho.csv.import.measurementPrefix
-const ITHO_CSV_MEASUREMENT_ENERGY_NAME = ITHO_CSV_MEASUREMENT_PREFIX + config.itho.csv.import.energy.measurement
-const ITHO_CSV_MEASUREMENT_TEMPERATURE_NAME = ITHO_CSV_MEASUREMENT_PREFIX + config.itho.csv.import.temperature.measurement
+const ITHO_CSV_MEASUREMENT_ENERGY_NAME =
+	ITHO_CSV_MEASUREMENT_PREFIX + config.itho.csv.import.energy.measurement
+const ITHO_CSV_MEASUREMENT_TEMPERATURE_NAME =
+	ITHO_CSV_MEASUREMENT_PREFIX + config.itho.csv.import.temperature.measurement
 
-const ITHO_CSV_MEASUREMENT_ENERGY_UNITS =
-config.itho.csv.import.energy.units
+const ITHO_CSV_MEASUREMENT_ENERGY_UNITS = config.itho.csv.import.energy.units
 const ITHO_CSV_MEASUREMENT_TEMPERATURE_UNITS =
-config.itho.csv.import.temperature.units
+	config.itho.csv.import.temperature.units
 
 exports.exportEnergy = (req, res, next) => {
 	const uuid = req.params.uuid
 
-	IthoEnergy.getAllByUuid(uuid, (err, data) => {
+	Location.findByUuidMandated(req.auth.username, uuid, (err, data) => {
 		if (err) {
 			if (err.kind === 'not_found') {
-				// 404
-				logger.warn(
-					`Did not find any Itho energy readings for UUID "${uuid}"`
-				)
+				res.status(404).send({
+					message: `Could not find location with uuid ${uuid}.`
+				})
 			}
 			next()
 		} else {
-			res.status(200).json({
-				measurement: ITHO_CSV_MEASUREMENT_ENERGY_NAME,
-				units: ITHO_CSV_MEASUREMENT_ENERGY_UNITS,
-				points: data
+			// Address exists and is mandated
+			IthoEnergy.getAllByUuid(uuid, (err, data) => {
+				if (err) {
+					if (err.kind === 'not_found') {
+						// 404
+						logger.warn(
+							`Did not find any Itho energy readings for UUID "${uuid}"`
+						)
+					}
+					next()
+				} else {
+					res.status(200).json({
+						measurement: ITHO_CSV_MEASUREMENT_ENERGY_NAME,
+						units: ITHO_CSV_MEASUREMENT_ENERGY_UNITS,
+						points: data
+					})
+				}
 			})
 		}
 	})
@@ -39,20 +53,32 @@ exports.exportEnergy = (req, res, next) => {
 exports.exportTemperature = (req, res, next) => {
 	const uuid = req.params.uuid
 
-	IthoTemperature.getAllByUuid(uuid, (err, data) => {
+	Location.findByUuidMandated(req.auth.username, uuid, (err, data) => {
 		if (err) {
 			if (err.kind === 'not_found') {
-				// 404
-				logger.warn(
-					`Did not find any Itho temperature readings for UUID "${uuid}"`
-				)
+				res.status(404).send({
+					message: `Could not find location with uuid ${uuid}.`
+				})
 			}
 			next()
 		} else {
-			res.status(200).json({
-				measurement: ITHO_CSV_MEASUREMENT_TEMPERATURE_NAME,
-				units: ITHO_CSV_MEASUREMENT_TEMPERATURE_UNITS,
-				points: data
+			// Address exists and is mandated
+			IthoTemperature.getAllByUuid(uuid, (err, data) => {
+				if (err) {
+					if (err.kind === 'not_found') {
+						// 404
+						logger.warn(
+							`Did not find any Itho temperature readings for UUID "${uuid}"`
+						)
+					}
+					next()
+				} else {
+					res.status(200).json({
+						measurement: ITHO_CSV_MEASUREMENT_TEMPERATURE_NAME,
+						units: ITHO_CSV_MEASUREMENT_TEMPERATURE_UNITS,
+						points: data
+					})
+				}
 			})
 		}
 	})
