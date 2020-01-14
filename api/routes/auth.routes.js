@@ -15,19 +15,16 @@ router
 // Check whether JWT token is valed
 router
 	.route('/check')
-	.get(
-		jwt,
-		authController.requestLogger,
-		(req, res) => res.json(req.auth)
-	)
+	.get(jwt, authController.requestLogger, (req, res) => res.json(req.auth))
 
 // Check whether user has admin privileges
-router
-	.route('/isadmin')
-	.get(
-		jwt,
-		authController.requestLogger,
-		authController.adminAuthorizationRequired
-	)
+router.route('/isadmin').get(
+	jwt,
+	authController.requestLogger,
+	authController.adminAuthorizationRequired,
+	(req, res) => res.json({
+		status: 'ok'
+	})
+)
 
 module.exports = router

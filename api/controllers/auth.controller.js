@@ -179,8 +179,8 @@ const adminAuthorizationRequired = (req, res, next) => {
 	}
 }
 
-const isAdmin = username => {
-	User.findByUsername(username, (err, data) => {
+const isAdmin = async username => {
+	await User.findByUsername(username, (err, data) => {
 		if (err) {
 			if (err.kind === 'not_found') {
 				// 404
