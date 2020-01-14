@@ -32,6 +32,13 @@ const SMARTDODOS_CSV_MEASUREMENT_ENERGY_UNITS =
 exports.exportEnergy = (req, res, next) => {
 	const uuid = req.params.uuid
 
+	if (!uuid) {
+		res.status(500).json({
+			error: 'No location UUID provided in request.'
+		})
+		return
+	}
+
 	Location.findByUuidMandated(req.auth.username, uuid, (err, data) => {
 		if (err) {
 			if (err.kind === 'not_found') {

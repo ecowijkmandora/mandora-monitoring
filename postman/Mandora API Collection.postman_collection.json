@@ -30,8 +30,8 @@
 							{
 								"key": "Content-Type",
 								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
+								"type": "text",
+								"value": "application/json"
 							}
 						],
 						"body": {
@@ -52,7 +52,8 @@
 								"auth",
 								"token"
 							]
-						}
+						},
+						"description": "Authenticate with user credentials (username and password). Returns a JSON Web Token (JWT) which is used to authenticate API calls by adding the token to the Authentication header of the request:\n\n```\nAuthorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.he0ErCNloe4J7Id0Ry2SEDg09lKkZkfsRiGsdX_vgEg\n```"
 					},
 					"response": []
 				},
@@ -113,12 +114,13 @@
 							"path": [
 								"locations"
 							]
-						}
+						},
+						"description": "Retrieve all available locations. This endpoint only returns locations which are available for the authenticated user (based on mandates)."
 					},
 					"response": []
 				},
 				{
-					"name": "Retrieve location (by uuid)",
+					"name": "Retrieve location details by UUID",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -141,7 +143,8 @@
 								"locations",
 								"{{LOCATION}}"
 							]
-						}
+						},
+						"description": "Retrieve the details of a location by its UUID. This endpoint only returns locations which are available for the authenticated user (based on mandates)."
 					},
 					"response": []
 				}
@@ -174,7 +177,7 @@
 			"name": "Data export",
 			"item": [
 				{
-					"name": "Export SmartDodos energy data (for location by uuid)",
+					"name": "Export SmartDodos energy data for location by UUID",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -206,12 +209,13 @@
 								"{{LOCATION}}",
 								"energy"
 							]
-						}
+						},
+						"description": "Exports SmartDodos energy data (time-series) of a location by its UUID. This endpoint only returns locations which are available for the authenticated user (based on mandates)."
 					},
 					"response": []
 				},
 				{
-					"name": "Export Itho energy data (for location by uuid)",
+					"name": "Export Itho energy data for location by UUID",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -256,12 +260,13 @@
 								"{{LOCATION}}",
 								"energy"
 							]
-						}
+						},
+						"description": "Exports Itho energy data (time-series) of a location by its UUID. This endpoint only returns locations which are available for the authenticated user (based on mandates)."
 					},
 					"response": []
 				},
 				{
-					"name": "Export Itho temperature data (for location by uuid)",
+					"name": "Export Itho temperature data for location by UUID",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -306,7 +311,8 @@
 								"{{LOCATION}}",
 								"temperature"
 							]
-						}
+						},
+						"description": "Exports Itho temperature data (time-series) of a location by its UUID. This endpoint only returns locations which are available for the authenticated user (based on mandates)."
 					},
 					"response": []
 				}
@@ -687,7 +693,7 @@
 					"name": "Data Import",
 					"item": [
 						{
-							"name": "Import Itho data (for location by uuid)",
+							"name": "Import Itho data for location by UUID",
 							"request": {
 								"auth": {
 									"type": "bearer",
@@ -839,7 +845,7 @@
 							"response": []
 						},
 						{
-							"name": "Import SmartDodos energy data (for location by uuid)",
+							"name": "Import SmartDodos energy data for location by UUID",
 							"request": {
 								"auth": {
 									"type": "bearer",
@@ -885,7 +891,7 @@
 							"response": []
 						},
 						{
-							"name": "Import SmartDodos energy data via website API",
+							"name": "Import SmartDodos energy data via SmartDodos website API",
 							"request": {
 								"auth": {
 									"type": "bearer",

@@ -19,6 +19,13 @@ const ITHO_CSV_MEASUREMENT_TEMPERATURE_UNITS =
 exports.exportEnergy = (req, res, next) => {
 	const uuid = req.params.uuid
 
+	if (!uuid) {
+		res.status(500).json({
+			error: 'No location UUID provided in request.'
+		})
+		return
+	}
+
 	Location.findByUuidMandated(req.auth.username, uuid, (err, data) => {
 		if (err) {
 			if (err.kind === 'not_found') {
@@ -52,6 +59,13 @@ exports.exportEnergy = (req, res, next) => {
 
 exports.exportTemperature = (req, res, next) => {
 	const uuid = req.params.uuid
+
+	if (!uuid) {
+		res.status(500).json({
+			error: 'No location UUID provided in request.'
+		})
+		return
+	}
 
 	Location.findByUuidMandated(req.auth.username, uuid, (err, data) => {
 		if (err) {
@@ -94,8 +108,14 @@ exports.importCsv = (req, res, next) => {
 		return
 	}
 
-	// TODO Check existance of location in MySQL
 	const uuid = req.params.uuid
+
+	if (!uuid) {
+		res.status(500).json({
+			error: 'No location UUID provided in request.'
+		})
+		return
+	}
 
 	const energy = files.energy
 	const temperature = files.temperature
