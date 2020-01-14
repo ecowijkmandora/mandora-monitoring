@@ -12,7 +12,7 @@ const {
 } = config.api.jwt
 
 const requestLogger = (req, res, next) => {
-	logger.info(`Request URL: ${req.originalUrl} [${req.auth.username}]`)
+	logger.info(`Request URL: ${req.baseUrl}${req.path} [${req.auth.username}]`)
 	next()
 }
 
