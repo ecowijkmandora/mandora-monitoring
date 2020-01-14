@@ -25,7 +25,7 @@ class Location {
 					return
 				}
 
-				logger.debug('Found:', res)
+				logger.debug('Location.getAllMandated: Found locations')
 				result(null, res)
 			}
 		)
@@ -59,7 +59,7 @@ class Location {
 					return
 				}
 
-				logger.debug('Found:', res)
+				logger.debug('Location.getAllMandated: Found locations')
 				result(null, res)
 			}
 		)
@@ -73,18 +73,21 @@ class Location {
 			uuid,
 			(err, res) => {
 				if (err) {
-					logger.error(`Location.findByUuid: error occured`, err)
+					logger.error(
+						`Location.findByUuid: error occured`,
+						err.message
+					)
 					result(err, null)
 					return
 				}
 
 				if (res.length) {
-					logger.debug('Found:', res[0])
+					logger.debug(`Location.findByUuid: found location`)
 					result(null, res[0])
 					return
 				}
 
-				logger.debug(`Not found`)
+				logger.debug(`Location.findByUuid: not found location`)
 				result({ kind: 'not_found' }, null)
 			}
 		)
@@ -117,19 +120,19 @@ class Location {
 				if (err) {
 					logger.error(
 						`Location.findByUuidMandated: error occured`,
-						err
+						err.message
 					)
 					result(err, null)
 					return
 				}
 
 				if (res.length) {
-					logger.debug('Found:', res[0])
+					logger.debug(`Location.findByUuidMandated: found location`)
 					result(null, res[0])
 					return
 				}
 
-				logger.debug(`Not found`)
+				logger.debug(`Location.findByUuidMandated: not found location`)
 				result({ kind: 'not_found' }, null)
 			}
 		)

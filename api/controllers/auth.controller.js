@@ -11,6 +11,11 @@ const {
 	sharedSecret: JWT_SHARED_SECRET
 } = config.api.jwt
 
+const requestLogger = (req, res, next) => {
+	logger.info(`Request URL: ${req.originalUrl} [${req.auth.username}]`)
+	next()
+}
+
 const authenticate = (req, res, next) => {
 	const username = req.body.username
 	const password = req.body.password
@@ -162,8 +167,41 @@ const respondJWT = (req, res) => {
 	}
 }
 
+const adminAuthorizationRequired = (req, res, next) => {
+	const username = req.auth.username
+	if (!isAdmin(username)) {
+		res.status(401).json({
+			error: 'Unauthorized'
+		})
+	} else {
+		// Use is authorized, continue middleware chain
+		next()
+	}
+}
+
+const isAdmin = username => {
+	User.findByUsername(username, (err, data) => {
+		if (err) {
+			if (err.kind === 'not_found') {
+				// 404
+				logger.warn(`Checking admin authorization for unknown user "${username}"`)
+			}
+		} else {			
+			if (data.admin) {				
+				return true
+			}
+		}
+
+		// User is not an admin
+		logger.warn(`User ${username} is not an administrator.`)
+		return false
+	})
+}
+
 module.exports = {
+	requestLogger: requestLogger,
 	authenticate: authenticate,
 	generateToken: generateToken,
-	respondJWT: respondJWT
+	respondJWT: respondJWT,	
+	adminAuthorizationRequired: adminAuthorizationRequired
 }

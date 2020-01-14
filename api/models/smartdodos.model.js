@@ -26,13 +26,13 @@ class SmartdodosEnergy {
 			.query(query)
 			.then(res => {
 				logger.debug(
-					'SmartdodosEnergy.getAllByUuid(${uuid}): Found data'
+					'SmartdodosEnergy.getAllByUuid: Found data'
 				)
 				result(null, res)
 			})
 			.catch(err => {
 				logger.error(
-					`SmartdodosEnergy.getAllByUuid(${uuid}): error occured`,
+					`SmartdodosEnergy.getAllByUuid: error occured`,
 					err
 				)
 				//res.status(500).send(err.stack)

@@ -17,34 +17,12 @@ class User {
 		this.last_name = user.last_name
 	}
 
-	static findById = (userId, result) => {
-		sql.query(
-			`SELECT * FROM ${MYSQL_TABLE_USER} WHERE id = ${userId}`,
-			(err, res) => {
-				if (err) {
-					logger.error(
-						`Error occured while querying user by id ${userId}: `,
-						err
-					)
-					result(err, null)
-					return
-				}
-
-				if (res.length) {
-					logger.debug('Found user by id: ', res[0])
-					result(null, res[0])
-					return
-				}
-
-				logger.debug(`Did not find user by id "${userId}"`)
-				result({ kind: 'not_found' }, null)
-			}
-		)
-	}
-
 	static findByUsername = (username, result) => {
 		sql.query(
-			`SELECT * FROM ${MYSQL_TABLE_USER} INNER JOIN ${MYSQL_TABLE_AUTHORIZATION} ON ${MYSQL_TABLE_USER}.${MYSQL_TABLE_AUTHORIZATION}_id = ${MYSQL_TABLE_AUTHORIZATION}.id WHERE username = '${username}'`,
+			`SELECT * FROM user
+			 INNER JOIN authorization ON user.authorization_id = authorization.id
+			 WHERE username = ?`,
+			username,
 			(err, res) => {
 				if (err) {
 					logger.error(
@@ -58,8 +36,7 @@ class User {
 				if (res.length) {
 					logger.log(
 						'debug',
-						`Found user by username "${username}"`,
-						res[0]
+						`Found user by username "${username}"`
 					)
 					result(null, res[0])
 					return
@@ -73,7 +50,11 @@ class User {
 
 	static findByCredentials = (username, password, result) => {
 		sql.query(
-			`SELECT * FROM ${MYSQL_TABLE_USER} INNER JOIN ${MYSQL_TABLE_AUTHORIZATION} ON ${MYSQL_TABLE_USER}.${MYSQL_TABLE_AUTHORIZATION}_id = ${MYSQL_TABLE_AUTHORIZATION}.id WHERE username = '${username}' AND AES_DECRYPT(password, '${MYSQL_AES_KEY}') = '${password}'`,
+			`SELECT * 
+			 FROM user 
+			 INNER JOIN authorization ON user.authorization_id = authorization.id 
+			 WHERE username = ? AND AES_DECRYPT(password, ?) = ?`,
+			[username, MYSQL_AES_KEY, password],
 			(err, res) => {
 				if (err) {
 					logger.error(

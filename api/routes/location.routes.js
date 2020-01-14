@@ -1,12 +1,17 @@
 const Express = require('express')
 const router = Express.Router()
 const jwt = require('../jwt')
-const controller = require('../controllers/location.controller')
+const locationController = require('../controllers/location.controller')
+const authController = require('../controllers/auth.controller')
 
 // Retrieve all Locations
-router.get('/', jwt, controller.findAll)
+router
+	.route('/')
+	.get(jwt, authController.requestLogger, locationController.findAll)
 
 // Retrieve Location by uuid
-router.get('/:uuid', jwt, controller.findByUuid)
+router
+	.route('/:uuid')
+	.get(jwt, authController.requestLogger, locationController.findByUuid)
 
 module.exports = router

@@ -1,24 +1,49 @@
 const Express = require('express')
 const router = Express.Router()
 const jwt = require('../jwt')
-const controller = require('../controllers/smartdodos.controller')
+const smartdodosController = require('../controllers/smartdodos.controller')
+const authController = require('../controllers/auth.controller')
 
 const multer = require('multer')
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
 
 // Bulk import Itho energy CSVs for address identified by uuid found in field names of the form
-router.post('/import/bulk/energy', jwt, upload.any(),controller.bulkImportCsvEnergy)
+router
+	.route('/import/bulk/energy')
+	.post(
+		jwt,
+		authController.requestLogger,
+		authController.adminAuthorizationRequired,
+		upload.any(),
+		smartdodosController.bulkImportCsvEnergy
+	)
 
 // Bulk import Itho energy CSVs for specific EANs/months using SmartDodos API calls
-router.post('/import/api/readings', jwt, upload.any(),controller.apiReadings)
+router
+	.route('/import/api/readings')
+	.post(
+		jwt,
+		authController.requestLogger,
+		authController.adminAuthorizationRequired,
+		upload.any(),
+		smartdodosController.apiReadings
+	)
 
 // Import SmartDodos CSVs for address identified by uuid
-router.post('/import/:uuid', jwt, upload.fields([
-	{ name: 'energy' }
-]),controller.importCsv)
+router
+	.route('/import/:uuid')
+	.post(
+		jwt,
+		authController.requestLogger,
+		authController.adminAuthorizationRequired,
+		upload.fields([{ name: 'energy' }]),
+		smartdodosController.importCsv
+	)
 
 // Export energy data for address identified by uuid
-router.get('/export/:uuid/energy', jwt,controller.exportEnergy)
+router
+	.route('/export/:uuid/energy')
+	.get(jwt, authController.requestLogger, smartdodosController.exportEnergy)
 
 module.exports = router
