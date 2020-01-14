@@ -31,24 +31,29 @@ router
 	)
 
 // Import Itho CSVs for address identified by uuid
-router
-	.route('/import/:uuid')
-	.post(
-		jwt,
-		authController.requestLogger,
-		authController.adminAuthorizationRequired,
-		upload.fields([{ name: 'energy' }, { name: 'temperature' }]),
-		ithoController.importCsv
-	)
+router.post(
+	'/import/:uuid',
+	jwt,
+	authController.requestLogger,
+	authController.adminAuthorizationRequired,
+	upload.fields([{ name: 'energy' }, { name: 'temperature' }]),
+	ithoController.importCsv
+)
 
 // Export energy data for address identified by uuid
-router
-	.route('/export/:uuid/energy')
-	.get(jwt, authController.requestLogger, ithoController.exportEnergy)
+router.get(
+	'/export/:uuid/energy',
+	jwt,
+	authController.requestLogger,
+	ithoController.exportEnergy
+)
 
 // Export temperature data for address identified by uuid
-router
-	.route('/export/:uuid/temperature')
-	.get(jwt, authController.requestLogger, ithoController.exportTemperature)
+router.get(
+	'/export/:uuid/temperature',
+	jwt,
+	authController.requestLogger,
+	ithoController.exportTemperature
+)
 
 module.exports = router

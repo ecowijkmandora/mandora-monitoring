@@ -10,8 +10,11 @@ router
 	.get(jwt, authController.requestLogger, locationController.findAll)
 
 // Retrieve Location by uuid
-router
-	.route('/:uuid')
-	.get(jwt, authController.requestLogger, locationController.findByUuid)
+router.get(
+	'/:uuid',
+	jwt,
+	authController.requestLogger,
+	locationController.findByUuid
+)
 
 module.exports = router

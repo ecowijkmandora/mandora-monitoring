@@ -31,19 +31,21 @@ router
 	)
 
 // Import SmartDodos CSVs for address identified by uuid
-router
-	.route('/import/:uuid')
-	.post(
-		jwt,
-		authController.requestLogger,
-		authController.adminAuthorizationRequired,
-		upload.fields([{ name: 'energy' }]),
-		smartdodosController.importCsv
-	)
+router.post(
+	'/import/:uuid',
+	jwt,
+	authController.requestLogger,
+	authController.adminAuthorizationRequired,
+	upload.fields([{ name: 'energy' }]),
+	smartdodosController.importCsv
+)
 
 // Export energy data for address identified by uuid
-router
-	.route('/export/:uuid/energy')
-	.get(jwt, authController.requestLogger, smartdodosController.exportEnergy)
+router.get(
+	'/export/:uuid/energy',
+	jwt,
+	authController.requestLogger,
+	smartdodosController.exportEnergy
+)
 
 module.exports = router
