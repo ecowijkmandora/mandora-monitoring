@@ -199,15 +199,15 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "{{API}}/smartdodos/export/{{LOCATION}}/energy",
+							"raw": "{{API}}/smartdodos/export/energy/{{LOCATION}}",
 							"host": [
 								"{{API}}"
 							],
 							"path": [
 								"smartdodos",
 								"export",
-								"{{LOCATION}}",
-								"energy"
+								"energy",
+								"{{LOCATION}}"
 							]
 						},
 						"description": "Exports SmartDodos energy data (time-series) of a location by its UUID. This endpoint only returns locations which are available for the authenticated user (based on mandates)."
@@ -250,15 +250,15 @@
 							]
 						},
 						"url": {
-							"raw": "{{API}}/itho/export/{{LOCATION}}/energy",
+							"raw": "{{API}}/itho/export/energy/{{LOCATION}}",
 							"host": [
 								"{{API}}"
 							],
 							"path": [
 								"itho",
 								"export",
-								"{{LOCATION}}",
-								"energy"
+								"energy",
+								"{{LOCATION}}"
 							]
 						},
 						"description": "Exports Itho energy data (time-series) of a location by its UUID. This endpoint only returns locations which are available for the authenticated user (based on mandates)."
@@ -301,15 +301,15 @@
 							]
 						},
 						"url": {
-							"raw": "{{API}}/itho/export/{{LOCATION}}/temperature",
+							"raw": "{{API}}/itho/export/temperature/{{LOCATION}}",
 							"host": [
 								"{{API}}"
 							],
 							"path": [
 								"itho",
 								"export",
-								"{{LOCATION}}",
-								"temperature"
+								"temperature",
+								"{{LOCATION}}"
 							]
 						},
 						"description": "Exports Itho temperature data (time-series) of a location by its UUID. This endpoint only returns locations which are available for the authenticated user (based on mandates)."

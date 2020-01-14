@@ -42,7 +42,7 @@ router.post(
 
 // Export energy data for address identified by uuid
 router.get(
-	'/export/:uuid/energy',
+	'/export/energy/:uuid',
 	jwt,
 	authController.requestLogger,
 	ithoController.exportEnergy
@@ -50,7 +50,7 @@ router.get(
 
 // Export temperature data for address identified by uuid
 router.get(
-	'/export/:uuid/temperature',
+	'/export/temperature/:uuid',
 	jwt,
 	authController.requestLogger,
 	ithoController.exportTemperature

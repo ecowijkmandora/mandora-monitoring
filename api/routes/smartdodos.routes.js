@@ -42,7 +42,7 @@ router.post(
 
 // Export energy data for address identified by uuid
 router.get(
-	'/export/:uuid/energy',
+	'/export/energy/:uuid',
 	jwt,
 	authController.requestLogger,
 	smartdodosController.exportEnergy
