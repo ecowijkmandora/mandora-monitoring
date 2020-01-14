@@ -6,7 +6,9 @@ const Express = require('express')
 const BodyParser = require('body-parser')
 const routes = require('./routes')
 
+const API_VERSION = 1
 const API_SERVER_PORT = config.api.server.port
+const API_BASEURL = '/api/' + API_VERSION
 
 const app = Express()
 
@@ -14,7 +16,7 @@ app.use(BodyParser.json())
 app.use(BodyParser.urlencoded({ extended: true }))
 
 // Mount all routes on /api path
-app.use('/api', routes)
+app.use(API_BASEURL, routes)
 
 // Error handler
 app.use((err, req, res, next) => {
