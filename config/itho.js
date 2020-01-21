@@ -7,6 +7,7 @@ module.exports = {
 			energy: {
 				measurement: 'energy',
 				units: 'kWh',
+				columns: 4,				
 				fields: [
 					{
 						0: 'timestamp',
@@ -21,6 +22,7 @@ module.exports = {
 			temperature: {
 				measurement: 'temperature',
 				units: 'C',
+				columns: 10,				
 				fields: [
 					{
 						0: 'timestamp',
