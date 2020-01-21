@@ -3,6 +3,7 @@ const config = require('@config')
 const logger = require('@lib/logger')
 const smartdodos = require('@lib/smartdodos')
 const _ = require('lodash')
+const util = require('util');
 const Installation = require('@api/models/installation.model')
 const Location = require('@api/models/location.model')
 const { SmartdodosEnergy } = require('@api/models/smartdodos.model')
@@ -87,7 +88,7 @@ exports.importCsv = (req, res, next) => {
 	if (energy) {
 		_.forEach(energy, file => {
 			const buffer = file.buffer
-			smartdodos.csv.import.importCsvEnergy(uuid, buffer)
+			smartdodos.import.importCsvEnergy(uuid, buffer)
 		})
 	}
 
@@ -109,7 +110,7 @@ exports.bulkImportCsvEnergy = (req, res, next) => {
 		const uuid = file.fieldname
 		// TODO Check existance of location in MySQL
 		const buffer = file.buffer
-		smartdodos.csv.import.importCsvEnergy(uuid, buffer)
+		smartdodos.import.importCsvEnergy(uuid, buffer)
 	}
 
 	res.status(200).json({
@@ -117,8 +118,8 @@ exports.bulkImportCsvEnergy = (req, res, next) => {
 	})
 }
 
-exports.apiReadings = (req, res, next) => {
-	const accessToken = req.body[SMARTDODOS_API_PARAMETERS_ACCESS_TOKEN]
+exports.apiReadings = async (req, res, next) => {
+	const accessToken = await smartdodos.auth.getApiToken()
 	const month = req.body[SMARTDODOS_API_PARAMETERS_MONTH]
 
 	let months = []
@@ -166,7 +167,7 @@ exports.apiReadings = (req, res, next) => {
 								logger.debug(
 									'Retrieved a CSV from SmartDodos API'
 								) // ,buffer.toString())
-								smartdodos.csv.import.importCsvEnergy(
+								smartdodos.import.importCsvEnergy(
 									uuid,
 									buffer
 								)

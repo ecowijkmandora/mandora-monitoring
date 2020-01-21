@@ -123,14 +123,14 @@ exports.importCsv = (req, res, next) => {
 	if (energy) {
 		_.forEach(energy, file => {
 			const buffer = file.buffer
-			itho.csv.import.importCsvEnergy(uuid, buffer)
+			itho.import.importCsvEnergy(uuid, buffer)
 		})
 	}
 
 	if (temperature) {
 		_.forEach(temperature, file => {
 			const buffer = file.buffer
-			itho.csv.import.importCsvTemperature(uuid, buffer)
+			itho.import.importCsvTemperature(uuid, buffer)
 		})
 	}
 
@@ -152,7 +152,7 @@ exports.bulkImportCsvEnergy = (req, res, next) => {
 		const uuid = file.fieldname
 		// TODO Check existance of location in MySQL
 		const buffer = file.buffer
-		itho.csv.import.importCsvEnergy(uuid, buffer)
+		itho.import.importCsvEnergy(uuid, buffer)
 	}
 
 	res.status(200).json({
@@ -173,7 +173,7 @@ exports.bulkImportCsvTemperature = (req, res, next) => {
 		const uuid = file.fieldname
 		// TODO Check existance of location in MySQL
 		const buffer = file.buffer
-		itho.csv.import.importCsvTemperature(uuid, buffer)
+		itho.import.importCsvTemperature(uuid, buffer)
 	}
 
 	res.status(200).json({
