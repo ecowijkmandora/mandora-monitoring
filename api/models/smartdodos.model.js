@@ -10,6 +10,9 @@ const SMARTDODOS_CSV_MEASUREMENT_PREFIX =
 const SMARTDODOS_CSV_MEASUREMENT_ENERGY_NAME =
 	SMARTDODOS_CSV_MEASUREMENT_PREFIX +
 	config.smartdodos.csv.import.energy.measurement
+const SMARTDODOS_CSV_MEASUREMENT_USAGE_NAME =
+	SMARTDODOS_CSV_MEASUREMENT_PREFIX +
+	config.smartdodos.csv.import.usage.measurement
 
 class SmartdodosEnergy {
 	constructor() {}
@@ -25,9 +28,7 @@ class SmartdodosEnergy {
 		influx
 			.query(query)
 			.then(res => {
-				logger.debug(
-					'SmartdodosEnergy.getAllByUuid: Found data'
-				)
+				logger.debug('SmartdodosEnergy.getAllByUuid: Found data')
 				result(null, res)
 			})
 			.catch(err => {
@@ -41,6 +42,32 @@ class SmartdodosEnergy {
 	}
 }
 
+class SmartdodosUsage {
+	constructor() {}
+
+	static getAllByUuid = (uuid, result) => {
+		logger.debug(`SmartdodosUsage.getAllByUuid(${uuid})`)
+
+		const query = `SELECT consumed,generated FROM ${escape.measurement(
+			SMARTDODOS_CSV_MEASUREMENT_USAGE_NAME
+		)} WHERE location = ${escape.stringLit(uuid)} ORDER BY time DESC`
+		logger.debug('Using query:', query)
+
+		influx
+			.query(query)
+			.then(res => {
+				logger.debug('SmartdodosUsage.getAllByUuid: Found data')
+				result(null, res)
+			})
+			.catch(err => {
+				logger.error(`SmartdodosUsage.getAllByUuid: error occured`, err)
+				//res.status(500).send(err.stack)
+				result(err, null)
+			})
+	}
+}
+
 module.exports = {
-	SmartdodosEnergy: SmartdodosEnergy
+	SmartdodosEnergy: SmartdodosEnergy,
+	SmartdodosUsage: SmartdodosUsage
 }

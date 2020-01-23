@@ -13,17 +13,32 @@ module.exports = {
 	csv: {
 		import: {
 			measurementPrefix: 'smartdodos_',
-			source: 'csv',
-			delimiter: ',',
+			source: 'csv',			
 			energy: {
 				measurement: 'energy',
 				units: 'Wh',
-				fields: [
-					{
-						0: 'timestamp',
-						1: 'consumed',
-						2: 'generated'						
-					}
+				delimiter: ',',
+				columns: [
+					'timestamp',
+					'consumed',
+					'generated'
+				],
+				datasets: [
+					['timestamp', 'consumed', 'generated']
+				]
+			},
+			usage: {
+				measurement: 'usage',
+				units: 'W',
+				delimiter: ';',
+				columns: [
+					'timestamp_from', // from 
+					'timestamp', // to
+					'consumed',
+					'generated'
+				],
+				datasets: [
+					['timestamp', 'consumed', 'generated']
 				]
 			}
 		}

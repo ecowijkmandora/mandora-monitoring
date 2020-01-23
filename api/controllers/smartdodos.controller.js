@@ -3,10 +3,13 @@ const config = require('@config')
 const logger = require('@lib/logger')
 const smartdodos = require('@lib/smartdodos')
 const _ = require('lodash')
-const util = require('util');
+const util = require('util')
 const Installation = require('@api/models/installation.model')
 const Location = require('@api/models/location.model')
-const { SmartdodosEnergy } = require('@api/models/smartdodos.model')
+const {
+	SmartdodosEnergy,
+	SmartdodosUsage
+} = require('@api/models/smartdodos.model')
 const request = require('request')
 const throttledRequest = require('throttled-request')(request)
 
@@ -29,6 +32,11 @@ const SMARTDODOS_CSV_MEASUREMENT_ENERGY_NAME =
 	config.smartdodos.csv.import.energy.measurement
 const SMARTDODOS_CSV_MEASUREMENT_ENERGY_UNITS =
 	config.smartdodos.csv.import.energy.units
+const SMARTDODOS_CSV_MEASUREMENT_USAGE_NAME =
+	SMARTDODOS_CSV_MEASUREMENT_PREFIX +
+	config.smartdodos.csv.import.usage.measurement
+const SMARTDODOS_CSV_MEASUREMENT_USAGE_UNITS =
+	config.smartdodos.csv.import.usage.units
 
 exports.exportEnergy = (req, res, next) => {
 	const uuid = req.params.uuid
@@ -72,6 +80,48 @@ exports.exportEnergy = (req, res, next) => {
 	})
 }
 
+exports.exportUsage = (req, res, next) => {
+	const uuid = req.params.uuid
+
+	if (!uuid) {
+		res.status(500).json({
+			error: 'No location UUID provided in request.'
+		})
+		return
+	}
+
+	Location.findByUuidMandated(req.auth.username, uuid, (err, data) => {
+		if (err) {
+			if (err.kind === 'not_found') {
+				res.status(404).send({
+					message: `Could not find location with uuid ${uuid}.`
+				})
+			}
+			next()
+		} else {
+			// Address exists and is mandated
+			SmartdodosUsage.getAllByUuid(uuid, (err, data) => {
+				if (err) {
+					if (err.kind === 'not_found') {
+						// 404
+						logger.warn(
+							`Did not find any Smartdodos energy usage for UUID "${uuid}"`
+						)
+					}
+					next()
+				} else {
+					res.status(200).json({
+						location: uuid,
+						measurement: SMARTDODOS_CSV_MEASUREMENT_USAGE_NAME,
+						units: SMARTDODOS_CSV_MEASUREMENT_USAGE_UNITS,
+						points: data
+					})
+				}
+			})
+		}
+	})
+}
+
 exports.importCsv = (req, res, next) => {
 	const files = req.files
 
@@ -85,11 +135,19 @@ exports.importCsv = (req, res, next) => {
 	const uuid = req.params.uuid
 
 	const energy = files.energy
+	const usage = files.usage
 
 	if (energy) {
 		_.forEach(energy, file => {
 			const buffer = file.buffer
 			smartdodos.import.importCsvEnergy(uuid, buffer)
+		})
+	}
+
+	if (usage) {
+		_.forEach(usage, file => {
+			const buffer = file.buffer
+			smartdodos.import.importCsvUsage(uuid, buffer)
 		})
 	}
 
@@ -168,10 +226,7 @@ exports.apiReadings = async (req, res, next) => {
 								logger.debug(
 									'Retrieved a CSV from SmartDodos API'
 								) // ,buffer.toString())
-								smartdodos.import.importCsvEnergy(
-									uuid,
-									buffer
-								)
+								smartdodos.import.importCsvEnergy(uuid, buffer)
 							}
 						)
 					})
@@ -190,3 +245,4 @@ const apiUrl = (ean, month, accessToken) => {
 	const url = `${SMARTDODOS_API_ENERGY_SERVICE_URL}?${SMARTDODOS_API_PARAMETERS_EAN}=${ean}&${SMARTDODOS_API_PARAMETERS_MONTH}=${month}&${SMARTDODOS_API_PARAMETERS_ACCESS_TOKEN}=${accessToken}`
 	return encodeURI(url)
 }
+

@@ -30,13 +30,24 @@ router
 		smartdodosController.apiReadings
 	)
 
+// Bulk import Itho usage CSVs for specific EANs/months using SmartDodos API calls
+router
+	.route('/import/api/usage')
+	.post(
+		jwt,
+		authController.requestLogger,
+		authController.adminAuthorizationRequired,
+		upload.any(),
+		smartdodosController.apiUsage
+	)
+
 // Import SmartDodos CSVs for address identified by uuid
 router.post(
 	'/import/:uuid',
 	jwt,
 	authController.requestLogger,
 	authController.adminAuthorizationRequired,
-	upload.fields([{ name: 'energy' }]),
+	upload.fields([{ name: 'energy' }, { name: 'usage'}]),
 	smartdodosController.importCsv
 )
 
@@ -46,6 +57,14 @@ router.get(
 	jwt,
 	authController.requestLogger,
 	smartdodosController.exportEnergy
+)
+
+// Export energy data for address identified by uuid
+router.get(
+	'/export/usage/:uuid',
+	jwt,
+	authController.requestLogger,
+	smartdodosController.exportUsage
 )
 
 module.exports = router
