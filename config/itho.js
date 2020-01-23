@@ -7,43 +7,38 @@ module.exports = {
 			energy: {
 				measurement: 'energy',
 				units: 'kWh',
-				columns: 4,				
-				fields: [
-					{
-						0: 'timestamp',
-						1: 'generated'
-					},
-					{
-						2: 'timestamp',
-						3: 'consumed'
-					}
+				columns: [
+					'generated_timestamp',
+					'generated',
+					'consumed_timestamp',
+					'consumed'
+				],
+				datasets: [
+					['generated_timestamp', 'generated'],
+					['consumed_timestamp', 'consumed']
 				]
 			},
 			temperature: {
 				measurement: 'temperature',
 				units: 'C',
-				columns: 10,				
-				fields: [
-					{
-						0: 'timestamp',
-						1: 'boiler_high'
-					},
-					{
-						2: 'timestamp',
-						3: 'boiler_low'
-					},
-					{
-						4: 'timestamp',
-						5: 'outdoor'
-					},
-					{
-						6: 'timestamp',
-						7: 'indoor'
-					},
-					{
-						8: 'timestamp',
-						9: 'setting'
-					}
+				columns: [
+					'boiler_high_timestamp',
+					'boiler_high',
+					'boiler_low_timestamp',
+					'boiler_low',
+					'outdoor_timestamp',
+					'outdoor',
+					'indoor_timestamp',
+					'indoor',
+					'setting_timestamp',
+					'setting'
+				],
+				datasets: [
+					['boiler_high_timestamp', 'boiler_high'],
+					['boiler_low_timestamp', 'boiler_low'],
+					['outdoor_timestamp', 'outdoor'],
+					['indoor_timestamp', 'indoor'],
+					['setting_timestamp', 'setting']
 				]
 			}
 		}
