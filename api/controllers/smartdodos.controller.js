@@ -61,6 +61,7 @@ exports.exportEnergy = (req, res, next) => {
 					next()
 				} else {
 					res.status(200).json({
+						location: uuid,
 						measurement: SMARTDODOS_CSV_MEASUREMENT_ENERGY_NAME,
 						units: SMARTDODOS_CSV_MEASUREMENT_ENERGY_UNITS,
 						points: data

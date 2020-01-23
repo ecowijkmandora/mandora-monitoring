@@ -47,6 +47,7 @@ exports.exportEnergy = (req, res, next) => {
 					next()
 				} else {
 					res.status(200).json({
+						location: uuid,
 						measurement: ITHO_CSV_MEASUREMENT_ENERGY_NAME,
 						units: ITHO_CSV_MEASUREMENT_ENERGY_UNITS,
 						points: data
@@ -88,6 +89,7 @@ exports.exportTemperature = (req, res, next) => {
 					next()
 				} else {
 					res.status(200).json({
+						location: uuid,
 						measurement: ITHO_CSV_MEASUREMENT_TEMPERATURE_NAME,
 						units: ITHO_CSV_MEASUREMENT_TEMPERATURE_UNITS,
 						points: data
