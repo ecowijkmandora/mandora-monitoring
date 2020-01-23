@@ -1,8 +1,8 @@
 const Express = require('express')
 const router = Express.Router()
 const jwt = require('../jwt')
-const smartdodosController = require('../controllers/smartdodos.controller')
-const authController = require('../controllers/auth.controller')
+const smartdodosController = require('@api/controllers/smartdodos.controller')
+const authController = require('@api/controllers/auth.controller')
 
 const multer = require('multer')
 const storage = multer.memoryStorage()
@@ -28,17 +28,6 @@ router
 		authController.adminAuthorizationRequired,
 		upload.any(),
 		smartdodosController.apiReadings
-	)
-
-// Bulk import Itho usage CSVs for specific EANs/months using SmartDodos API calls
-router
-	.route('/import/api/usage')
-	.post(
-		jwt,
-		authController.requestLogger,
-		authController.adminAuthorizationRequired,
-		upload.any(),
-		smartdodosController.apiUsage
 	)
 
 // Import SmartDodos CSVs for address identified by uuid
