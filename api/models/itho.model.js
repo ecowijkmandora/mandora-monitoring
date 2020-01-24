@@ -5,20 +5,20 @@ const logger = require('@lib/logger')
 const { escape } = require('influx')
 const influx = store.influx
 
-const ITHO_CSV_MEASUREMENT_PREFIX = config.itho.csv.import.measurementPrefix
-const ITHO_CSV_MEASUREMENT_ENERGY_NAME =
-	ITHO_CSV_MEASUREMENT_PREFIX + config.itho.csv.import.energy.measurement
-const ITHO_CSV_MEASUREMENT_TEMPERATURE_NAME =
-	ITHO_CSV_MEASUREMENT_PREFIX + config.itho.csv.import.temperature.measurement
+const ITHO_MEASUREMENTS_PREFIX = config.itho.measurements.measurementPrefix
+const ITHO_MEASUREMENTS_READINGS_NAME =
+	ITHO_MEASUREMENTS_PREFIX + config.itho.measurements.readings.measurement
+const ITHO_MEASUREMENTS_TEMPERATURES_NAME =
+	ITHO_MEASUREMENTS_PREFIX + config.itho.measurements.temperatures.measurement
 
-class IthoEnergy {
+class IthoReadings {
 	constructor() {}
 
 	static getAllByUuid = (uuid, result) => {
-		logger.debug(`IthoEnergy.getAllByUuid(${uuid})`)
+		logger.debug(`IthoReadings.getAllByUuid(${uuid})`)
 
 		const query = `SELECT consumed,generated FROM ${escape.measurement(
-			ITHO_CSV_MEASUREMENT_ENERGY_NAME
+			ITHO_MEASUREMENTS_READINGS_NAME
 		)} WHERE location = ${escape.stringLit(uuid)}
 		ORDER BY time DESC`
 		logger.debug('Using query:', query)
@@ -26,12 +26,12 @@ class IthoEnergy {
 		influx
 			.query(query)
 			.then(res => {
-				logger.debug('IthoEnergy.getAllByUuid(${uuid}): Found data')
+				logger.debug('IthoReadings.getAllByUuid(${uuid}): Found data')
 				result(null, res)
 			})
 			.catch(err => {
 				logger.error(
-					`IthoEnergy.getAllByUuid(${uuid}): error occured`,
+					`IthoReadings.getAllByUuid(${uuid}): error occured`,
 					err
 				)
 				result(err, null)
@@ -39,14 +39,14 @@ class IthoEnergy {
 	}
 }
 
-class IthoTemperature {
+class IthoTemperatures {
 	constructor() {}
 
 	static getAllByUuid = (uuid, result) => {
-		logger.debug(`IthoTemperature.getAllByUuid(${uuid})`)
+		logger.debug(`IthoTemperatures.getAllByUuid(${uuid})`)
 
 		const query = `SELECT indoor,outdoor,setting,boiler_low,boiler_high FROM ${escape.measurement(
-			ITHO_CSV_MEASUREMENT_TEMPERATURE_NAME
+			ITHO_MEASUREMENTS_TEMPERATURES_NAME
 		)} WHERE location = ${escape.stringLit(uuid)}
 		ORDER BY time DESC`
 		logger.debug('Using query:', query)
@@ -55,13 +55,13 @@ class IthoTemperature {
 			.query(query)
 			.then(res => {
 				logger.debug(
-					'IthoTemperature.getAllByUuid(${uuid}): Found data'
+					'IthoTemperatures.getAllByUuid(${uuid}): Found data'
 				)
 				result(null, res)
 			})
 			.catch(err => {
 				logger.error(
-					`IthoTemperature.getAllByUuid(${uuid}): error occured`,
+					`IthoTemperatures.getAllByUuid(${uuid}): error occured`,
 					err
 				)
 				result(err, null)
@@ -70,6 +70,6 @@ class IthoTemperature {
 }
 
 module.exports = {
-	IthoEnergy: IthoEnergy,
-	IthoTemperature: IthoTemperature
+	IthoReadings: IthoReadings,
+	IthoTemperatures: IthoTemperatures
 }

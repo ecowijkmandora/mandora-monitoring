@@ -5,35 +5,35 @@ const logger = require('@lib/logger')
 const { escape } = require('influx')
 const influx = store.influx
 
-const SMARTDODOS_CSV_MEASUREMENT_PREFIX =
-	config.smartdodos.csv.import.measurementPrefix
-const SMARTDODOS_CSV_MEASUREMENT_ENERGY_NAME =
-	SMARTDODOS_CSV_MEASUREMENT_PREFIX +
-	config.smartdodos.csv.import.energy.measurement
-const SMARTDODOS_CSV_MEASUREMENT_USAGE_NAME =
-	SMARTDODOS_CSV_MEASUREMENT_PREFIX +
-	config.smartdodos.csv.import.usage.measurement
+const SMARTDODOS_MEASUREMENTS_PREFIX =
+	config.smartdodos.measurements.measurementPrefix
+const SMARTDODOS_MEASUREMENTS_READINGS_NAME =
+	SMARTDODOS_MEASUREMENTS_PREFIX +
+	config.smartdodos.measurements.readings.measurement
+const SMARTDODOS_MEASUREMENTS_USAGES_NAME =
+	SMARTDODOS_MEASUREMENTS_PREFIX +
+	config.smartdodos.measurements.usages.measurement
 
-class SmartdodosEnergy {
+class SmartdodosReadings {
 	constructor() {}
 
 	static getAllByUuid = (uuid, result) => {
-		logger.debug(`SmartdodosEnergy.getAllByUuid(${uuid})`)
+		logger.debug(`SmartdodosReadings.getAllByUuid(${uuid})`)
 
 		const query = `SELECT consumed,generated FROM ${escape.measurement(
-			SMARTDODOS_CSV_MEASUREMENT_ENERGY_NAME
+			SMARTDODOS_MEASUREMENTS_READINGS_NAME
 		)} WHERE location = ${escape.stringLit(uuid)} ORDER BY time DESC`
 		logger.debug('Using query:', query)
 
 		influx
 			.query(query)
 			.then(res => {
-				logger.debug('SmartdodosEnergy.getAllByUuid: Found data')
+				logger.debug('SmartdodosReadings.getAllByUuid: Found data')
 				result(null, res)
 			})
 			.catch(err => {
 				logger.error(
-					`SmartdodosEnergy.getAllByUuid: error occured`,
+					`SmartdodosReadings.getAllByUuid: error occured`,
 					err
 				)
 				//res.status(500).send(err.stack)
@@ -42,25 +42,25 @@ class SmartdodosEnergy {
 	}
 }
 
-class SmartdodosUsage {
+class SmartdodosUsages {
 	constructor() {}
 
 	static getAllByUuid = (uuid, result) => {
-		logger.debug(`SmartdodosUsage.getAllByUuid(${uuid})`)
+		logger.debug(`SmartdodosUsages.getAllByUuid(${uuid})`)
 
 		const query = `SELECT consumed,generated FROM ${escape.measurement(
-			SMARTDODOS_CSV_MEASUREMENT_USAGE_NAME
+			SMARTDODOS_MEASUREMENTS_USAGES_NAME
 		)} WHERE location = ${escape.stringLit(uuid)} ORDER BY time DESC`
 		logger.debug('Using query:', query)
 
 		influx
 			.query(query)
 			.then(res => {
-				logger.debug('SmartdodosUsage.getAllByUuid: Found data')
+				logger.debug('SmartdodosUsages.getAllByUuid: Found data')
 				result(null, res)
 			})
 			.catch(err => {
-				logger.error(`SmartdodosUsage.getAllByUuid: error occured`, err)
+				logger.error(`SmartdodosUsages.getAllByUuid: error occured`, err)
 				//res.status(500).send(err.stack)
 				result(err, null)
 			})
@@ -68,6 +68,6 @@ class SmartdodosUsage {
 }
 
 module.exports = {
-	SmartdodosEnergy: SmartdodosEnergy,
-	SmartdodosUsage: SmartdodosUsage
+	SmartdodosReadings: SmartdodosReadings,
+	SmartdodosUsages: SmartdodosUsages
 }

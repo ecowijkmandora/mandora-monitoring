@@ -84,6 +84,34 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Check JWT admin privileges",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API}}/auth/isadmin",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"auth",
+								"isadmin"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -177,7 +205,7 @@
 			"name": "Data export",
 			"item": [
 				{
-					"name": "Export SmartDodos energy data for location by UUID",
+					"name": "Export SmartDodos energy  reading data for location by UUID",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -199,14 +227,14 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "{{API}}/smartdodos/export/energy/{{LOCATION}}",
+							"raw": "{{API}}/smartdodos/export/readings/{{LOCATION}}",
 							"host": [
 								"{{API}}"
 							],
 							"path": [
 								"smartdodos",
 								"export",
-								"energy",
+								"readings",
 								"{{LOCATION}}"
 							]
 						},
@@ -215,7 +243,45 @@
 					"response": []
 				},
 				{
-					"name": "Export Itho energy data for location by UUID",
+					"name": "Export SmartDodos energy usage data for location by UUID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{API}}/smartdodos/export/usages/{{LOCATION}}",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"smartdodos",
+								"export",
+								"usages",
+								"{{LOCATION}}"
+							]
+						},
+						"description": "Exports SmartDodos energy data (time-series) of a location by its UUID. This endpoint only returns locations which are available for the authenticated user (based on mandates)."
+					},
+					"response": []
+				},
+				{
+					"name": "Export Itho energy reading data for location by UUID",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -250,14 +316,14 @@
 							]
 						},
 						"url": {
-							"raw": "{{API}}/itho/export/energy/{{LOCATION}}",
+							"raw": "{{API}}/itho/export/readings/{{LOCATION}}",
 							"host": [
 								"{{API}}"
 							],
 							"path": [
 								"itho",
 								"export",
-								"energy",
+								"readings",
 								"{{LOCATION}}"
 							]
 						},
@@ -301,14 +367,14 @@
 							]
 						},
 						"url": {
-							"raw": "{{API}}/itho/export/temperature/{{LOCATION}}",
+							"raw": "{{API}}/itho/export/temperatures/{{LOCATION}}",
 							"host": [
 								"{{API}}"
 							],
 							"path": [
 								"itho",
 								"export",
-								"temperature",
+								"temperatures",
 								"{{LOCATION}}"
 							]
 						},
@@ -566,7 +632,7 @@
 							"response": []
 						},
 						{
-							"name": "SELECT * FROM itho_energy (for location by uuid)",
+							"name": "SELECT * FROM itho_reading (for location by uuid)",
 							"request": {
 								"method": "POST",
 								"header": [
@@ -582,7 +648,7 @@
 									"urlencoded": [
 										{
 											"key": "q",
-											"value": "SELECT * FROM itho_energy WHERE location = '{{LOCATION}}'\n",
+											"value": "SELECT * FROM itho_reading WHERE location = '{{LOCATION}}'\n",
 											"type": "text"
 										}
 									]
@@ -646,7 +712,7 @@
 							"response": []
 						},
 						{
-							"name": "SELECT * FROM smartdodos_energy (for location by uuid)",
+							"name": "SELECT * FROM smartdodos_reading (for location by uuid)",
 							"request": {
 								"method": "POST",
 								"header": [
@@ -662,7 +728,47 @@
 									"urlencoded": [
 										{
 											"key": "q",
-											"value": "SELECT * FROM smartdodos_energy WHERE location = '{{LOCATION}}'\n",
+											"value": "SELECT * FROM smartdodos_reading WHERE location = '{{LOCATION}}'\n",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{INFLUX}}/query?db=mandora",
+									"host": [
+										"{{INFLUX}}"
+									],
+									"path": [
+										"query"
+									],
+									"query": [
+										{
+											"key": "db",
+											"value": "mandora"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SELECT * FROM smartdodos_usage (for location by uuid)",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "q",
+											"value": "SELECT * FROM smartdodos_usage WHERE location = '{{LOCATION}}'\n",
 											"type": "text"
 										}
 									]
@@ -718,12 +824,12 @@
 									"mode": "formdata",
 									"formdata": [
 										{
-											"key": "energy",
+											"key": "readings",
 											"type": "file",
 											"src": []
 										},
 										{
-											"key": "temperature",
+											"key": "temperatures",
 											"type": "file",
 											"src": []
 										}
@@ -744,7 +850,7 @@
 							"response": []
 						},
 						{
-							"name": "Bulk import Itho energy data",
+							"name": "Import SmartDodos energy reading data (SmartDodos API)",
 							"request": {
 								"auth": {
 									"type": "bearer",
@@ -768,159 +874,6 @@
 								"body": {
 									"mode": "formdata",
 									"formdata": [
-										{
-											"key": "{{LOCATION}}",
-											"type": "file",
-											"src": []
-										}
-									]
-								},
-								"url": {
-									"raw": "{{API}}/itho/import/bulk/energy",
-									"host": [
-										"{{API}}"
-									],
-									"path": [
-										"itho",
-										"import",
-										"bulk",
-										"energy"
-									],
-									"query": [
-										{
-											"key": "",
-											"value": "",
-											"disabled": true
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Bulk import Itho temperature data",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{JWT_TOKEN}}",
-											"type": "string"
-										}
-									]
-								},
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"type": "text",
-										"value": "application/x-www-form-urlencoded"
-									}
-								],
-								"body": {
-									"mode": "formdata",
-									"formdata": [
-										{
-											"key": "{{LOCATION}}",
-											"type": "file",
-											"src": []
-										}
-									]
-								},
-								"url": {
-									"raw": "{{API}}/itho/import/bulk/energy",
-									"host": [
-										"{{API}}"
-									],
-									"path": [
-										"itho",
-										"import",
-										"bulk",
-										"energy"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Import SmartDodos energy data for location by UUID",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{JWT_TOKEN}}",
-											"type": "string"
-										}
-									]
-								},
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"type": "text",
-										"value": "application/x-www-form-urlencoded"
-									}
-								],
-								"body": {
-									"mode": "formdata",
-									"formdata": [
-										{
-											"key": "energy",
-											"type": "file",
-											"src": []
-										}
-									]
-								},
-								"url": {
-									"raw": "{{API}}/smartdodos/import/{{LOCATION}}",
-									"host": [
-										"{{API}}"
-									],
-									"path": [
-										"smartdodos",
-										"import",
-										"{{LOCATION}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Import SmartDodos energy data via SmartDodos website API",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{JWT_TOKEN}}",
-											"type": "string"
-										}
-									]
-								},
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"type": "text",
-										"value": "application/x-www-form-urlencoded"
-									}
-								],
-								"body": {
-									"mode": "formdata",
-									"formdata": [
-										{
-											"key": "access_token",
-											"value": "{{SMARTDODOS_ACCESS_TOKEN}}",
-											"description": "Access token taken from the API URL used by the SmartDodos CSV export view (https://app.smartdodos.com/#/export-csv",
-											"type": "text"
-										},
 										{
 											"key": "month",
 											"value": "202001",
@@ -929,42 +882,50 @@
 										{
 											"key": "month",
 											"value": "201912",
-											"type": "text"
+											"type": "text",
+											"disabled": true
 										},
 										{
 											"key": "month",
 											"value": "201911",
-											"type": "text"
+											"type": "text",
+											"disabled": true
 										},
 										{
 											"key": "month",
 											"value": "201910",
-											"type": "text"
+											"type": "text",
+											"disabled": true
 										},
 										{
 											"key": "month",
 											"value": "201909",
-											"type": "text"
+											"type": "text",
+											"disabled": true
 										},
 										{
 											"key": "month",
 											"value": "201908",
-											"type": "text"
+											"type": "text",
+											"disabled": true
 										},
 										{
 											"key": "month",
 											"value": "201907",
-											"type": "text"
+											"type": "text",
+											"disabled": true
 										},
 										{
 											"key": "month",
 											"value": "201906",
-											"type": "text"
+											"type": "text",
+											"disabled": true
 										},
 										{
 											"key": "month",
 											"value": "201905",
-											"type": "text"
+											"type": "text",
+											"disabled": true
 										}
 									]
 								},
@@ -978,6 +939,101 @@
 										"import",
 										"api",
 										"readings"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Import SmartDodos energy usage data (UMeter API)",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{JWT_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "month",
+											"value": "202001",
+											"type": "text"
+										},
+										{
+											"key": "month",
+											"value": "201912",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "month",
+											"value": "201911",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "month",
+											"value": "201910",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "month",
+											"value": "201909",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "month",
+											"value": "201908",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "month",
+											"value": "201907",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "month",
+											"value": "201906",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "month",
+											"value": "201905",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "{{API}}/smartdodos/import/api/usages",
+									"host": [
+										"{{API}}"
+									],
+									"path": [
+										"smartdodos",
+										"import",
+										"api",
+										"usages"
 									]
 								}
 							},

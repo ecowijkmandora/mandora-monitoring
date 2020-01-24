@@ -1,6 +1,7 @@
+require('module-alias/register')
 const Express = require('express')
 const router = Express.Router()
-const jwt = require('../jwt')
+const jwt = require('@api/jwt')
 const smartdodosController = require('@api/controllers/smartdodos.controller')
 const authController = require('@api/controllers/auth.controller')
 
@@ -8,18 +9,26 @@ const multer = require('multer')
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
 
-// Bulk import Itho energy CSVs for address identified by uuid found in field names of the form
 router
-	.route('/import/bulk/energy')
+	.route('/import/bulk/readings')
 	.post(
 		jwt,
 		authController.requestLogger,
 		authController.adminAuthorizationRequired,
 		upload.any(),
-		smartdodosController.bulkImportCsvEnergy
+		smartdodosController.bulkImportCsvReadings
 	)
 
-// Bulk import Itho energy CSVs for specific EANs/months using SmartDodos API calls
+router
+	.route('/import/bulk/usgaes')
+	.post(
+		jwt,
+		authController.requestLogger,
+		authController.adminAuthorizationRequired,
+		upload.any(),
+		smartdodosController.bulkImportCsvUsages
+	)
+
 router
 	.route('/import/api/readings')
 	.post(
@@ -30,30 +39,37 @@ router
 		smartdodosController.apiReadings
 	)
 
-// Import SmartDodos CSVs for address identified by uuid
+router
+	.route('/import/api/usages')
+	.post(
+		jwt,
+		authController.requestLogger,
+		authController.adminAuthorizationRequired,
+		upload.any(),
+		smartdodosController.apiUsages
+	)
+
 router.post(
 	'/import/:uuid',
 	jwt,
 	authController.requestLogger,
 	authController.adminAuthorizationRequired,
-	upload.fields([{ name: 'energy' }, { name: 'usage'}]),
+	upload.fields([{ name: 'readings' }, { name: 'usages' }]),
 	smartdodosController.importCsv
 )
 
-// Export energy data for address identified by uuid
 router.get(
-	'/export/energy/:uuid',
+	'/export/readings/:uuid',
 	jwt,
 	authController.requestLogger,
-	smartdodosController.exportEnergy
+	smartdodosController.exportReadings
 )
 
-// Export energy data for address identified by uuid
 router.get(
-	'/export/usage/:uuid',
+	'/export/usages/:uuid',
 	jwt,
 	authController.requestLogger,
-	smartdodosController.exportUsage
+	smartdodosController.exportUsages
 )
 
 module.exports = router

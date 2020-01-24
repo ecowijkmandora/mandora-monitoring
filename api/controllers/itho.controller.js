@@ -4,19 +4,19 @@ const logger = require('@lib/logger')
 const itho = require('@lib/itho')
 const _ = require('lodash')
 const Location = require('@api/models/location.model')
-const { IthoEnergy, IthoTemperature } = require('@api/models/itho.model')
+const { IthoReadings, IthoTemperatures } = require('@api/models/itho.model')
 
-const ITHO_CSV_MEASUREMENT_PREFIX = config.itho.csv.import.measurementPrefix
-const ITHO_CSV_MEASUREMENT_ENERGY_NAME =
-	ITHO_CSV_MEASUREMENT_PREFIX + config.itho.csv.import.energy.measurement
-const ITHO_CSV_MEASUREMENT_TEMPERATURE_NAME =
-	ITHO_CSV_MEASUREMENT_PREFIX + config.itho.csv.import.temperature.measurement
+const ITHO_MEASUREMENTS_PREFIX = config.itho.measurements.measurementPrefix
+const ITHO_MEASUREMENTS_READINGS_NAME =
+	ITHO_MEASUREMENTS_PREFIX + config.itho.measurements.readings.measurement
+const ITHO_MEASUREMENTS_TEMPERATURES_NAME =
+	ITHO_MEASUREMENTS_PREFIX + config.itho.measurements.temperatures.measurement
 
-const ITHO_CSV_MEASUREMENT_ENERGY_UNITS = config.itho.csv.import.energy.units
-const ITHO_CSV_MEASUREMENT_TEMPERATURE_UNITS =
-	config.itho.csv.import.temperature.units
+const ITHO_MEASUREMENTS_READINGS_UNITS = config.itho.measurements.readings.units
+const ITHO_MEASUREMENTS_TEMPERATURES_UNITS =
+	config.itho.measurements.temperatures.units
 
-exports.exportEnergy = (req, res, next) => {
+exports.exportReadings = (req, res, next) => {
 	const uuid = req.params.uuid
 
 	if (!uuid) {
@@ -36,20 +36,20 @@ exports.exportEnergy = (req, res, next) => {
 			next()
 		} else {
 			// Address exists and is mandated
-			IthoEnergy.getAllByUuid(uuid, (err, data) => {
+			IthoReadings.getAllByUuid(uuid, (err, data) => {
 				if (err) {
 					if (err.kind === 'not_found') {
 						// 404
 						logger.warn(
-							`Did not find any Itho energy readings for UUID "${uuid}"`
+							`Did not find any Itho readings for UUID "${uuid}"`
 						)
 					}
 					next()
 				} else {
 					res.status(200).json({
 						location: uuid,
-						measurement: ITHO_CSV_MEASUREMENT_ENERGY_NAME,
-						units: ITHO_CSV_MEASUREMENT_ENERGY_UNITS,
+						measurement: ITHO_MEASUREMENTS_READINGS_NAME,
+						units: ITHO_MEASUREMENTS_READINGS_UNITS,
 						points: data
 					})
 				}
@@ -58,7 +58,7 @@ exports.exportEnergy = (req, res, next) => {
 	})
 }
 
-exports.exportTemperature = (req, res, next) => {
+exports.exportTemperatures = (req, res, next) => {
 	const uuid = req.params.uuid
 
 	if (!uuid) {
@@ -78,7 +78,7 @@ exports.exportTemperature = (req, res, next) => {
 			next()
 		} else {
 			// Address exists and is mandated
-			IthoTemperature.getAllByUuid(uuid, (err, data) => {
+			IthoTemperatures.getAllByUuid(uuid, (err, data) => {
 				if (err) {
 					if (err.kind === 'not_found') {
 						// 404
@@ -90,8 +90,8 @@ exports.exportTemperature = (req, res, next) => {
 				} else {
 					res.status(200).json({
 						location: uuid,
-						measurement: ITHO_CSV_MEASUREMENT_TEMPERATURE_NAME,
-						units: ITHO_CSV_MEASUREMENT_TEMPERATURE_UNITS,
+						measurement: ITHO_MEASUREMENTS_TEMPERATURES_NAME,
+						units: ITHO_MEASUREMENTS_TEMPERATURES_UNITS,
 						points: data
 					})
 				}
@@ -119,20 +119,20 @@ exports.importCsv = (req, res, next) => {
 		return
 	}
 
-	const energy = files.energy
-	const temperature = files.temperature
+	const readings = files.readings
+	const temperatures = files.temperatures
 
-	if (energy) {
-		_.forEach(energy, file => {
+	if (readings) {
+		_.forEach(readings, file => {
 			const buffer = file.buffer
-			itho.import.importCsvEnergy(uuid, buffer)
+			itho.csv.importCsvReadings(uuid, buffer)
 		})
 	}
 
-	if (temperature) {
-		_.forEach(temperature, file => {
+	if (temperatures) {
+		_.forEach(temperatures, file => {
 			const buffer = file.buffer
-			itho.import.importCsvTemperature(uuid, buffer)
+			itho.csv.importCsvTemperatures(uuid, buffer)
 		})
 	}
 
@@ -141,7 +141,7 @@ exports.importCsv = (req, res, next) => {
 	})
 }
 
-exports.bulkImportCsvEnergy = (req, res, next) => {
+exports.bulkImportCsvReadings = (req, res, next) => {
 	const files = req.files
 
 	if (!files || files.length < 1) {
@@ -154,7 +154,7 @@ exports.bulkImportCsvEnergy = (req, res, next) => {
 		const uuid = file.fieldname
 		// TODO Check existance of location in MySQL
 		const buffer = file.buffer
-		itho.import.importCsvEnergy(uuid, buffer)
+		itho.csv.importCsvReadings(uuid, buffer)
 	}
 
 	res.status(200).json({
@@ -162,7 +162,7 @@ exports.bulkImportCsvEnergy = (req, res, next) => {
 	})
 }
 
-exports.bulkImportCsvTemperature = (req, res, next) => {
+exports.bulkImportCsvTemperatures = (req, res, next) => {
 	const files = req.files
 
 	if (!files || files.length < 1) {
@@ -175,7 +175,7 @@ exports.bulkImportCsvTemperature = (req, res, next) => {
 		const uuid = file.fieldname
 		// TODO Check existance of location in MySQL
 		const buffer = file.buffer
-		itho.import.importCsvTemperature(uuid, buffer)
+		itho.csv.importCsvTemperatures(uuid, buffer)
 	}
 
 	res.status(200).json({

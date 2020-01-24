@@ -3,42 +3,46 @@ const config = require('@config')
 const logger = require('@lib/logger')
 const smartdodos = require('@lib/smartdodos')
 const _ = require('lodash')
-const util = require('util')
 const Installation = require('@api/models/installation.model')
 const Location = require('@api/models/location.model')
 const {
-	SmartdodosEnergy,
-	SmartdodosUsage
+	SmartdodosReadings,
+	SmartdodosUsages
 } = require('@api/models/smartdodos.model')
 const request = require('request')
 const throttledRequest = require('throttled-request')(request)
 
 throttledRequest.configure({
 	requests: 2,
-	milliseconds: 1000
+	milliseconds: 5000
 })
 
-const SMARTDODOS_API_ENERGY_SERVICE_URL =
-	config.smartdodos.api.baseUrl + config.smartdodos.api.energyService
-const SMARTDODOS_API_PARAMETERS_ACCESS_TOKEN =
-	config.smartdodos.api.parameterAccessToken
-const SMARTDODOS_API_PARAMETERS_MONTH = config.smartdodos.api.parameterMonth
-const SMARTDODOS_API_PARAMETERS_EAN = config.smartdodos.api.parameterEan
+const SMARTDODOS_API_APP_READINGS_SERVICE_URL =
+	config.smartdodos.api.app.baseUrl + config.smartdodos.api.app.readingService
+const SMARTDODOS_API_APP_PARAMETERS_ACCESS_TOKEN =
+	config.smartdodos.api.app.parameterAccessToken
+const SMARTDODOS_API_APP_PARAMETERS_MONTH =
+	config.smartdodos.api.app.parameterMonth
+const SMARTDODOS_API_APP_PARAMETERS_EAN = config.smartdodos.api.app.parameterEan
 
-const SMARTDODOS_CSV_MEASUREMENT_PREFIX =
-	config.smartdodos.csv.import.measurementPrefix
-const SMARTDODOS_CSV_MEASUREMENT_ENERGY_NAME =
-	SMARTDODOS_CSV_MEASUREMENT_PREFIX +
-	config.smartdodos.csv.import.energy.measurement
-const SMARTDODOS_CSV_MEASUREMENT_ENERGY_UNITS =
-	config.smartdodos.csv.import.energy.units
-const SMARTDODOS_CSV_MEASUREMENT_USAGE_NAME =
-	SMARTDODOS_CSV_MEASUREMENT_PREFIX +
-	config.smartdodos.csv.import.usage.measurement
-const SMARTDODOS_CSV_MEASUREMENT_USAGE_UNITS =
-	config.smartdodos.csv.import.usage.units
+const SMARTDODOS_API_UMETER_USAGES_SERVICE_URL =
+	config.smartdodos.api.umeter.baseUrl +
+	config.smartdodos.api.umeter.usageService
 
-exports.exportEnergy = (req, res, next) => {
+const SMARTDODOS_MEASUREMENTS_PREFIX =
+	config.smartdodos.measurements.measurementPrefix
+const SMARTDODOS_MEASUREMENTS_READINGS_NAME =
+	SMARTDODOS_MEASUREMENTS_PREFIX +
+	config.smartdodos.measurements.readings.measurement
+const SMARTDODOS_MEASUREMENTS_READINGS_UNITS =
+	config.smartdodos.measurements.readings.units
+const SMARTDODOS_MEASUREMENTS_USAGES_NAME =
+	SMARTDODOS_MEASUREMENTS_PREFIX +
+	config.smartdodos.measurements.usages.measurement
+const SMARTDODOS_MEASUREMENTS_USAGES_UNITS =
+	config.smartdodos.measurements.usages.units
+
+exports.exportReadings = (req, res, next) => {
 	const uuid = req.params.uuid
 
 	if (!uuid) {
@@ -58,20 +62,20 @@ exports.exportEnergy = (req, res, next) => {
 			next()
 		} else {
 			// Address exists and is mandated
-			SmartdodosEnergy.getAllByUuid(uuid, (err, data) => {
+			SmartdodosReadings.getAllByUuid(uuid, (err, data) => {
 				if (err) {
 					if (err.kind === 'not_found') {
 						// 404
 						logger.warn(
-							`Did not find any Smartdodos energy readings for UUID "${uuid}"`
+							`Did not find any Smartdodos readings for UUID "${uuid}"`
 						)
 					}
 					next()
 				} else {
 					res.status(200).json({
 						location: uuid,
-						measurement: SMARTDODOS_CSV_MEASUREMENT_ENERGY_NAME,
-						units: SMARTDODOS_CSV_MEASUREMENT_ENERGY_UNITS,
+						measurement: SMARTDODOS_MEASUREMENTS_READINGS_NAME,
+						units: SMARTDODOS_MEASUREMENTS_READINGS_UNITS,
 						points: data
 					})
 				}
@@ -80,7 +84,7 @@ exports.exportEnergy = (req, res, next) => {
 	})
 }
 
-exports.exportUsage = (req, res, next) => {
+exports.exportUsages = (req, res, next) => {
 	const uuid = req.params.uuid
 
 	if (!uuid) {
@@ -100,20 +104,20 @@ exports.exportUsage = (req, res, next) => {
 			next()
 		} else {
 			// Address exists and is mandated
-			SmartdodosUsage.getAllByUuid(uuid, (err, data) => {
+			SmartdodosUsages.getAllByUuid(uuid, (err, data) => {
 				if (err) {
 					if (err.kind === 'not_found') {
 						// 404
 						logger.warn(
-							`Did not find any Smartdodos energy usage for UUID "${uuid}"`
+							`Did not find any Smartdodos usages for UUID "${uuid}"`
 						)
 					}
 					next()
 				} else {
 					res.status(200).json({
 						location: uuid,
-						measurement: SMARTDODOS_CSV_MEASUREMENT_USAGE_NAME,
-						units: SMARTDODOS_CSV_MEASUREMENT_USAGE_UNITS,
+						measurement: SMARTDODOS_MEASUREMENTS_USAGES_NAME,
+						units: SMARTDODOS_MEASUREMENTS_USAGES_UNITS,
 						points: data
 					})
 				}
@@ -134,20 +138,20 @@ exports.importCsv = (req, res, next) => {
 
 	const uuid = req.params.uuid
 
-	const energy = files.energy
-	const usage = files.usage
+	const readings = files.readings
+	const usages = files.usages
 
-	if (energy) {
-		_.forEach(energy, file => {
+	if (readings) {
+		_.forEach(readings, file => {
 			const buffer = file.buffer
-			smartdodos.import.importCsvEnergy(uuid, buffer)
+			smartdodos.csv.importCsvReadings(uuid, buffer)
 		})
 	}
 
-	if (usage) {
-		_.forEach(usage, file => {
+	if (usages) {
+		_.forEach(usages, file => {
 			const buffer = file.buffer
-			smartdodos.import.importCsvUsage(uuid, buffer)
+			smartdodos.csv.importCsvUsages(uuid, buffer)
 		})
 	}
 
@@ -156,7 +160,7 @@ exports.importCsv = (req, res, next) => {
 	})
 }
 
-exports.bulkImportCsvEnergy = (req, res, next) => {
+exports.bulkImportCsvReadings = (req, res, next) => {
 	const files = req.files
 
 	if (!files || files.length < 1) {
@@ -169,7 +173,28 @@ exports.bulkImportCsvEnergy = (req, res, next) => {
 		const uuid = file.fieldname
 		// TODO Check existance of location in MySQL
 		const buffer = file.buffer
-		smartdodos.import.importCsvEnergy(uuid, buffer)
+		smartdodos.csv.importCsvReadings(uuid, buffer)
+	}
+
+	res.status(200).json({
+		message: 'Import started.'
+	})
+}
+
+exports.bulkImportCsvUsages = (req, res, next) => {
+	const files = req.files
+
+	if (!files || files.length < 1) {
+		res.status(500).json({
+			error: 'No files uploaded.'
+		})
+	}
+
+	for (let file of files) {
+		const uuid = file.fieldname
+		// TODO Check existance of location in MySQL
+		const buffer = file.buffer
+		smartdodos.csv.importCsvUsages(uuid, buffer)
 	}
 
 	res.status(200).json({
@@ -178,8 +203,8 @@ exports.bulkImportCsvEnergy = (req, res, next) => {
 }
 
 exports.apiReadings = async (req, res, next) => {
-	const accessToken = await smartdodos.auth.getApiToken()
-	const month = req.body[SMARTDODOS_API_PARAMETERS_MONTH]
+	const accessToken = await smartdodos.auth.getApiAccessToken()
+	const month = req.body[SMARTDODOS_API_APP_PARAMETERS_MONTH]
 
 	let months = []
 	if (Array.isArray(month)) {
@@ -189,11 +214,11 @@ exports.apiReadings = async (req, res, next) => {
 	}
 
 	// Retrieve all EANs to query from the API
-	const installations = Installation.getAll((err, data) => {
+	Installation.getAll((err, data) => {
 		if (err) {
 			if (err.kind === 'not_found') {
 				// 404
-				logger.warn(`Login attempt by unknown user "${username}"`)
+				logger.warn(`Unable to find locations`)
 			}
 			next()
 		} else {
@@ -201,12 +226,14 @@ exports.apiReadings = async (req, res, next) => {
 				const ean = installation.ean_energy
 				const uuid = installation.location_uuid
 
-				// Retrieve energy data if we have a valid EAN number
+				// Retrieve reading data if we have a valid EAN number
 				if (!isNaN(ean)) {
 					_.forEach(months, async (month, idx, arr) => {
-						const url = apiUrl(ean, month, accessToken)
+						const url = encodeURI(
+							`${SMARTDODOS_API_APP_READINGS_SERVICE_URL}?${SMARTDODOS_API_APP_PARAMETERS_EAN}=${ean}&${SMARTDODOS_API_APP_PARAMETERS_MONTH}=${month}&${SMARTDODOS_API_APP_PARAMETERS_ACCESS_TOKEN}=${accessToken}`
+						)
 						logger.debug(
-							`Fetching energy data from SmartDodos API: ${url}`
+							`Fetching reading data from SmartDodos API: ${url}`
 						)
 
 						throttledRequest(
@@ -226,7 +253,7 @@ exports.apiReadings = async (req, res, next) => {
 								logger.debug(
 									'Retrieved a CSV from SmartDodos API'
 								) // ,buffer.toString())
-								smartdodos.import.importCsvEnergy(uuid, buffer)
+								smartdodos.csv.importCsvReadings(uuid, buffer)
 							}
 						)
 					})
@@ -241,8 +268,71 @@ exports.apiReadings = async (req, res, next) => {
 	})
 }
 
-const apiUrl = (ean, month, accessToken) => {
-	const url = `${SMARTDODOS_API_ENERGY_SERVICE_URL}?${SMARTDODOS_API_PARAMETERS_EAN}=${ean}&${SMARTDODOS_API_PARAMETERS_MONTH}=${month}&${SMARTDODOS_API_PARAMETERS_ACCESS_TOKEN}=${accessToken}`
-	return encodeURI(url)
-}
+exports.apiUsages = async (req, res, next) => {
+	const accessToken = await smartdodos.auth.getApiAccessToken()
+	const month = req.body[SMARTDODOS_API_APP_PARAMETERS_MONTH]
 
+	let months = []
+	if (Array.isArray(month)) {
+		months = [...month]
+	} else {
+		months.push(month)
+	}
+
+	// Retrieve all EANs to query from the API
+	Installation.getAll((err, data) => {
+		if (err) {
+			if (err.kind === 'not_found') {
+				// 404
+				logger.warn(`Unable to find locations`)
+			}
+			next()
+		} else {
+			for (let installation of data) {
+				const ean = installation.ean_energy
+				const uuid = installation.location_uuid
+
+				// Retrieve reading data if we have a valid EAN number
+				if (!isNaN(ean)) {
+					_.forEach(months, async (month, idx, arr) => {
+						const url = encodeURI(
+							`${SMARTDODOS_API_UMETER_USAGES_SERVICE_URL}/${ean}/${month}`
+						)
+						logger.debug(
+							`Fetching reading data from SmartDodos API: ${url}`
+						)
+
+						throttledRequest(
+							url,
+							{
+								encoding: null, // We want the CSV in a buffer
+								headers: {
+									Authorization: `bearer ${accessToken}`
+								}
+							},
+							(err, res, buffer) => {
+								if (err) {
+									logger.error(
+										'Unable to retrieve CSV from SmartDodos API:',
+										err.message
+									)
+									return
+								}
+								//logger.debug('CSV', body)
+								logger.debug(
+									'Retrieved a CSV from SmartDodos API'
+								) // ,buffer.toString())
+								smartdodos.csv.importCsvUsages(uuid, buffer)
+							}
+						)
+					})
+				}
+			}
+			next()
+		}
+	})
+
+	res.status(200).json({
+		message: 'Import started.'
+	})
+}

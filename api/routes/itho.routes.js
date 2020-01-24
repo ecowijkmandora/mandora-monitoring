@@ -1,8 +1,9 @@
+require('module-alias/register')
 const Express = require('express')
 const router = Express.Router()
-const jwt = require('../jwt')
-const ithoController = require('../controllers/itho.controller')
-const authController = require('../controllers/auth.controller')
+const jwt = require('@api/jwt')
+const ithoController = require('@api/controllers/itho.controller')
+const authController = require('@api/controllers/auth.controller')
 
 const multer = require('multer')
 const storage = multer.memoryStorage()
@@ -10,24 +11,24 @@ const upload = multer({ storage: storage })
 
 // Bulk import Itho energy CSVs for address identified by uuid found in field names of the form
 router
-	.route('/import/bulk/energy')
+	.route('/import/bulk/readings')
 	.post(
 		jwt,
 		authController.requestLogger,
 		authController.adminAuthorizationRequired,
 		upload.any(),
-		ithoController.bulkImportCsvEnergy
+		ithoController.bulkImportCsvReadings
 	)
 
 // Bulk import Itho energy CSVs for address identified by uuid found in field names of the form
 router
-	.route('/import/bulk/temperature')
+	.route('/import/bulk/temperatures')
 	.post(
 		jwt,
 		authController.requestLogger,
 		authController.adminAuthorizationRequired,
 		upload.any(),
-		ithoController.bulkImportCsvTemperature
+		ithoController.bulkImportCsvTemperatures
 	)
 
 // Import Itho CSVs for address identified by uuid
@@ -36,24 +37,24 @@ router.post(
 	jwt,
 	authController.requestLogger,
 	authController.adminAuthorizationRequired,
-	upload.fields([{ name: 'energy' }, { name: 'temperature' }]),
+	upload.fields([{ name: 'readings' }, { name: 'temperatures' }]),
 	ithoController.importCsv
 )
 
 // Export energy data for address identified by uuid
 router.get(
-	'/export/energy/:uuid',
+	'/export/readings/:uuid',
 	jwt,
 	authController.requestLogger,
-	ithoController.exportEnergy
+	ithoController.exportReadings
 )
 
 // Export temperature data for address identified by uuid
 router.get(
-	'/export/temperature/:uuid',
+	'/export/temperatures/:uuid',
 	jwt,
 	authController.requestLogger,
-	ithoController.exportTemperature
+	ithoController.exportTemperatures
 )
 
 module.exports = router

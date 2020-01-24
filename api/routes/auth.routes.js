@@ -1,7 +1,8 @@
+require('module-alias/register')
 const Express = require('express')
 const router = Express.Router()
-const jwt = require('../jwt')
-const authController = require('../controllers/auth.controller')
+const jwt = require('@api/jwt')
+const authController = require('@api/controllers/auth.controller')
 
 // Generate JWT token using username/password credentials
 router
