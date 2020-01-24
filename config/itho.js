@@ -2,7 +2,7 @@ module.exports = {
 	measurements: {
 		measurementPrefix: 'itho_',
 		readings: {
-			measurement: 'reading',
+			measurement: 'energy',
 			units: 'kWh',
 			delimiter: ';',
 			source: 'csv',			

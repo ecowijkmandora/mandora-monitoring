@@ -19,7 +19,7 @@ module.exports = {
 	measurements: {
 		measurementPrefix: 'smartdodos_',
 		readings: {
-			measurement: 'reading',
+			measurement: 'energy',
 			units: 'Wh',
 			delimiter: ',',
 			source: 'csv',			
