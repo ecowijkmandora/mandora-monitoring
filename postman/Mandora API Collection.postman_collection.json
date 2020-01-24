@@ -297,23 +297,10 @@
 							]
 						},
 						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/x-www-form-urlencoded"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "energy",
-									"type": "file",
-									"src": []
-								}
-							]
+							"formdata": []
 						},
 						"url": {
 							"raw": "{{API}}/itho/export/readings/{{LOCATION}}",
@@ -348,23 +335,10 @@
 							]
 						},
 						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/x-www-form-urlencoded"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "energy",
-									"type": "file",
-									"src": []
-								}
-							]
+							"formdata": []
 						},
 						"url": {
 							"raw": "{{API}}/itho/export/temperatures/{{LOCATION}}",
